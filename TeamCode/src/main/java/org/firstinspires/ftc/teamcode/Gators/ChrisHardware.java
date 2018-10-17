@@ -118,16 +118,21 @@ public class ChrisHardware
     }
 
     void headTargetDirection(double degree, double speed) {
-        double port = (Math.abs(-degree / 45.0)-2) * speed;
-        double starboard = -(Math.abs(-degree / 45.0)-2) * speed;
+        double portToStarboard = (Math.abs(-degree / 45.0)-2) * speed;
+        double starboardToPort = -(Math.abs(-degree / 45.0)-2) * speed;
+
+        if (degree == -1) {
+            portToStarboard = 0;
+            starboardToPort = 0;
+        }
 
         // front wheels
-        frontPortDrive.setPower(port);
-        frontStarboardDrive.setPower(starboard);
+        frontPortDrive.setPower(portToStarboard);
+        frontStarboardDrive.setPower(starboardToPort);
 
         // back wheels
-        backPortDrive.setPower(port);
-        backStarboardDrive.setPower(starboard);
+        backPortDrive.setPower(-starboardToPort);
+        backStarboardDrive.setPower(-portToStarboard);
     }
 
 }

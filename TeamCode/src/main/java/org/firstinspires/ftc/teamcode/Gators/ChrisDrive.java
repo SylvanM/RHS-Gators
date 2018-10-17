@@ -78,6 +78,7 @@ public class ChrisDrive extends OpMode {
     public void start() {
         // Run on start
         telemetry.addLine("Driver in control!");
+        telemetry.addData("Left input degrees:", "");
     }
 
     /*
@@ -91,13 +92,10 @@ public class ChrisDrive extends OpMode {
 
         // turning takes precedence over movement
         // i.e. if you are moving the bot around but then suddenly start moving the right thumb-stick to turn, the bot will stop moving to turn
-        if (Math.abs(gamepad1.right_stick_x) > 0) {
-            robot.turnWithSpeed(gamepad1.right_stick_x);
-        } else if (Math.abs(gamepad1.left_stick_x) > 0 || Math.abs(gamepad1.left_stick_y) > 0) {
-            robot.headTargetDirection(getLeftStickDegrees(), gamepad1.right_trigger);
-        }
-
+        robot.headTargetDirection(getLeftStickDegrees(), gamepad1.right_trigger);
         // Send telemetry message to signify robot running
+        telemetry.addData("Left stick input degrees:", getLeftStickDegrees());
+        telemetry.addData("Right trigger activation:", gamepad1.right_trigger);
 
         // Claw control
 
@@ -116,28 +114,28 @@ public class ChrisDrive extends OpMode {
     // methods
 
     double getLeftStickDegrees() {
-        double x = gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
+        //must invert inputs
+        double x = -gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_y;
 
-        double angle = Math.atan(y / x);
+        double referenceAngle = Math.abs(Math.atan(y / x) * (180 / 3.14159265358979));
+        double angle = 0;
 
-        // If any of thee coordinates are negative, we need to make sure we have the right quadrant
-        if (x < 0 && y < 0) {
-            angle += 180;
-        } else if (x < 0 && y > 0) {
-            angle += 270;
-        } else if (y < 0 && x > 0) {
-            angle += 90;
+        if (x < 0 && y > 0) {
+            angle = 180 - referenceAngle;
+        } else if (x > 0 && y < 0) {
+            angle = 360 - referenceAngle;
+        } else if (x < 0 && y < 0) {
+            angle = 180 + referenceAngle;
         }
 
-        // make sure angle is a measure between 0 and 360
-        while (angle > 360) {
-            angle -= 360;
-        }
+        telemetry.addData("Reference Angle:", referenceAngle);
 
         if (x == 0 && y == 0) {
-            angle = 0;
+            return -1;
         }
+
+        telemetry.addData("Left stick degrees:", angle);
 
         return angle;
     }
