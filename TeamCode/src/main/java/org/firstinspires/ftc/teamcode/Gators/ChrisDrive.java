@@ -32,19 +32,23 @@ package org.firstinspires.ftc.teamcode.Gators;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
+@TeleOp(name="Chris Drive", group="Tank Control")
 //@Disabled
 public class ChrisDrive extends OpMode {
 
     /* Declare OpMode members. */
     private ChrisHardware robot         = new ChrisHardware(); // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
-    private double          clawOffset  = 0.0 ;                // Servo mid position
-    private final double    CLAW_SPEED  = 0.02 ;               // sets rate to move servo
+    private double          clawOffset  = 0.0;                // Servo mid position
+    private final double    CLAW_SPEED  = 0.02;               // sets rate to move servo
+
+    private Gamepad robotController = gamepad1;
+    private Gamepad armController   = gamepad2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -52,7 +56,7 @@ public class ChrisDrive extends OpMode {
     @Override
     public void init() {
         // hey
-        // Code runs on init-button prassed
+        // Code runs on init-button pressed
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -78,7 +82,6 @@ public class ChrisDrive extends OpMode {
     public void start() {
         // Run on start
         telemetry.addLine("Driver in control!");
-        telemetry.addData("Left input degrees:", "");
     }
 
     /*
@@ -86,19 +89,57 @@ public class ChrisDrive extends OpMode {
      */
     @Override
     public void loop() {
-        // Actual control
+        /*
+         * This part of the loop function controls the actual motion of the robot
+         *
+         * TO CONTROL:
+         * Both sides of the robot are controlled by their respective thumb sticks
+         * eg. to go forward, push both thumb sticks forward. To rotate right, push the left stick forward and pull the right one backward.
+         *
+         * To move side to side: Press the respective bumper buttons on the controller in relation to where you want to go
+         */
 
-        // Code for robot control goes here
+        // move left and right
+        if (robotController.right_bumper) { robot.headSideways(ChrisHardware.Direction.right, 1); }
+        if (robotController.left_bumper)  { robot.headSideways(ChrisHardware.Direction.right, -1); }
 
-        // turning takes precedence over movement
-        // i.e. if you are moving the bot around but then suddenly start moving the right thumb-stick to turn, the bot will stop moving to turn
-        robot.headTargetDirection(getLeftStickDegrees(), gamepad1.right_trigger);
-        // Send telemetry message to signify robot running
-        telemetry.addData("Left stick input degrees:", getLeftStickDegrees());
-        telemetry.addData("Right trigger activation:", gamepad1.right_trigger);
+        // control separate sides (tank drive)
+        robot.setMotorGroup(ChrisHardware.MotorGroup.port, robotController.left_stick_y);
+        robot.setMotorGroup(ChrisHardware.MotorGroup.starboard, robotController.right_stick_y);
 
-        // Claw control
+        /*
+         * ARM CONTROL
+         */
 
+        double armRotationTorque = armController.right_trigger - armController.left_trigger;
+        double armBaseRaisingTorque = armController.right_stick_y;
+
+        robot.rotateArm(armRotationTorque);
+        robot.raiseArmBase(armBaseRaisingTorque);
+
+
+        /*
+         * TELEMETRY
+         */
+
+        // show motor group power
+        telemetry.addData("port motors power:", robotController.left_stick_y);
+        telemetry.addData("starboard motors power:", robotController.right_stick_y);
+
+        // show sideways movement info
+        if (robotController.right_bumper || robotController.left_bumper) {
+            String sidewaysDirection = robotController.right_bumper ? "right" : "left";
+            telemetry.addData("sideways direction", sidewaysDirection);
+        } else {
+            telemetry.addData("sideways direction", "null");
+        }
+
+        // show arm data
+        double armRotationPower = robot.armRotationMotor.getPower();
+        double armRaisingPower  = robot.armBaseMotor.getPower();
+
+        telemetry.addData("arm rotation:", armRotationPower);
+        telemetry.addData("arm raising force:", armRaisingPower);
     }
 
     /*
@@ -113,30 +154,5 @@ public class ChrisDrive extends OpMode {
 
     // methods
 
-    double getLeftStickDegrees() {
-        //must invert inputs
-        double x = -gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
 
-        double referenceAngle = Math.abs(Math.atan(y / x) * (180 / 3.14159265358979));
-        double angle = 0;
-
-        if (x < 0 && y > 0) {
-            angle = 180 - referenceAngle;
-        } else if (x > 0 && y < 0) {
-            angle = 360 - referenceAngle;
-        } else if (x < 0 && y < 0) {
-            angle = 180 + referenceAngle;
-        }
-
-        telemetry.addData("Reference Angle:", referenceAngle);
-
-        if (x == 0 && y == 0) {
-            return -1;
-        }
-
-        telemetry.addData("Left stick degrees:", angle);
-
-        return angle;
-    }
 }

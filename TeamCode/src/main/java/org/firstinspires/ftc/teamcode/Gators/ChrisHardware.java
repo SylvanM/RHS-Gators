@@ -58,6 +58,9 @@ public class ChrisHardware
     public DcMotor backPortDrive  = null;
     public DcMotor backStarboardDrive = null;
 
+    public DcMotor armRotationMotor = null;
+    public DcMotor armBaseMotor = null;
+
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
@@ -81,6 +84,9 @@ public class ChrisHardware
         backPortDrive        = hwMap.get(DcMotor.class, "back_port");
         backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
 
+        armRotationMotor     = hwMap.get(DcMotor.class, "arm_rotation");
+        armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
+
         // These might need to be changed
         frontPortDrive.setDirection(DcMotor.Direction.FORWARD);
         frontStarboardDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -101,38 +107,55 @@ public class ChrisHardware
         backStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    void closeClaw() {
-
+    void rotateArm(double torque) {
+        armRotationMotor.setPower(torque);
     }
 
-    void openClaw() {
-
+    void raiseArmBase(double torque) {
+        armBaseMotor.setPower(torque);
     }
 
-    void turnWithSpeed(double speed) {
-        frontPortDrive.setPower(speed);
-        backPortDrive.setPower(speed);
+    void headSideways(Direction direction, double speed) {
+        switch (direction) {
+            case left:
+                frontPortDrive.setPower(speed);
+                frontStarboardDrive.setPower(-speed);
 
-        frontStarboardDrive.setPower(-speed);
-        backStarboardDrive.setPower(-speed);
-    }
+                backPortDrive.setPower(-speed);
+                backStarboardDrive.setPower(speed);
+            case right:
+                frontPortDrive.setPower(-speed);
+                frontStarboardDrive.setPower(speed);
 
-    void headTargetDirection(double degree, double speed) {
-        double portToStarboard = (Math.abs(-degree / 45.0)-2) * speed;
-        double starboardToPort = -(Math.abs(-degree / 45.0)-2) * speed;
-
-        if (degree == -1) {
-            portToStarboard = 0;
-            starboardToPort = 0;
+                backPortDrive.setPower(speed);
+                backStarboardDrive.setPower(-speed);
         }
+    }
 
-        // front wheels
-        frontPortDrive.setPower(portToStarboard);
-        frontStarboardDrive.setPower(starboardToPort);
+    void setMotorGroup(MotorGroup group, double power) {
+        switch (group) {
+            case port:
+                frontPortDrive.setPower(power);
+                backPortDrive.setPower(power);
+            case starboard:
+                frontStarboardDrive.setPower(power);
+                backStarboardDrive.setPower(power);
+            case front:
+                frontPortDrive.setPower(power);
+                frontStarboardDrive.setPower(power);
+            case back:
+                backPortDrive.setPower(power);
+                backStarboardDrive.setPower(power);
+        }
+    }
 
-        // back wheels
-        backPortDrive.setPower(-starboardToPort);
-        backStarboardDrive.setPower(-portToStarboard);
+    // lets us have 2 values for direction
+    enum Direction {
+        left, right, forward, backward
+    }
+
+    enum MotorGroup {
+        port, starboard, front, back
     }
 
 }
