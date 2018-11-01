@@ -81,7 +81,7 @@ public class JanDrive extends OpMode {
         telemetry.addLine("Jan is in control");
 
         // Detach from Lander
-        robot.openClaw();
+        //robot.openClaw();
     }
 
     /*

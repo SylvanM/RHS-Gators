@@ -84,8 +84,8 @@ public class ChrisHardware
         backPortDrive        = hwMap.get(DcMotor.class, "back_port");
         backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
 
-        armRotationMotor     = hwMap.get(DcMotor.class, "arm_rotation");
-        armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
+        //armRotationMotor     = hwMap.get(DcMotor.class, "arm_rotation");
+        //armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
 
         // These might need to be changed
         frontPortDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -108,11 +108,11 @@ public class ChrisHardware
     }
 
     void rotateArm(double torque) {
-        armRotationMotor.setPower(torque);
+    //    armRotationMotor.setPower(torque);
     }
 
     void raiseArmBase(double torque) {
-        armBaseMotor.setPower(torque);
+    //    armBaseMotor.setPower(torque);
     }
 
     void headSideways(Direction direction, double speed) {
