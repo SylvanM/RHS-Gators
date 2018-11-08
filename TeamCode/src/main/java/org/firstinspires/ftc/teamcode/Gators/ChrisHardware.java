@@ -53,13 +53,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class ChrisHardware
 {
     /* Public OpMode members. */
-    public DcMotor frontPortDrive   = null;
-    public DcMotor frontStarboardDrive  = null;
-    public DcMotor backPortDrive  = null;
-    public DcMotor backStarboardDrive = null;
+    public DcMotor frontPortDrive;
+    public DcMotor frontStarboardDrive;
+    public DcMotor backPortDrive;
+    public DcMotor backStarboardDrive;
 
-    public DcMotor armRotationMotor = null;
-    public DcMotor armBaseMotor = null;
+    public DcMotor armRotationMotor;
+    public DcMotor armBaseMotor;
 
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
@@ -118,16 +118,16 @@ public class ChrisHardware
     void headSideways(Direction direction, double speed) {
         switch (direction) {
             case left:
-                frontPortDrive.setPower(speed);
+                frontPortDrive.setPower(-speed);
                 frontStarboardDrive.setPower(-speed);
 
-                backPortDrive.setPower(-speed);
+                backPortDrive.setPower(speed);
                 backStarboardDrive.setPower(speed);
             case right:
-                frontPortDrive.setPower(-speed);
+                frontPortDrive.setPower(speed);
                 frontStarboardDrive.setPower(speed);
 
-                backPortDrive.setPower(speed);
+                backPortDrive.setPower(-speed);
                 backStarboardDrive.setPower(-speed);
         }
     }

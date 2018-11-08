@@ -45,10 +45,7 @@ public class ChrisDrive extends OpMode {
     private ChrisHardware robot         = new ChrisHardware(); // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
     private double          clawOffset  = 0.0;                // Servo mid position
-    private final double    CLAW_SPEED  = 0.02;               // sets rate to move servo
-
-    private Gamepad robotController = gamepad1;
-    private Gamepad armController   = gamepad2;
+    private final double    CLAW_SPEED  = 0.02;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -100,19 +97,19 @@ public class ChrisDrive extends OpMode {
          */
 
         // move left and right
-        if (robotController.right_bumper) { robot.headSideways(ChrisHardware.Direction.right, 1); }
-        if (robotController.left_bumper)  { robot.headSideways(ChrisHardware.Direction.right, -1); }
+        if (gamepad1.right_bumper) { robot.headSideways(ChrisHardware.Direction.right, 1); }
+        if (gamepad1.left_bumper)  { robot.headSideways(ChrisHardware.Direction.left, 1); }
 
         // control separate sides (tank drive)
-        robot.setMotorGroup(ChrisHardware.MotorGroup.port, robotController.left_stick_y);
-        robot.setMotorGroup(ChrisHardware.MotorGroup.starboard, robotController.right_stick_y);
+        robot.setMotorGroup(ChrisHardware.MotorGroup.port, -gamepad1.left_stick_y);
+        robot.setMotorGroup(ChrisHardware.MotorGroup.starboard, gamepad1.right_stick_y);
 
         /*
          * ARM CONTROL
          */
 
-        double armRotationTorque = armController.right_trigger - armController.left_trigger;
-        double armBaseRaisingTorque = armController.right_stick_y;
+        double armRotationTorque = gamepad2.right_trigger - gamepad2.left_trigger;
+        double armBaseRaisingTorque = gamepad2.right_stick_y;
 
         robot.rotateArm(armRotationTorque);
         robot.raiseArmBase(armBaseRaisingTorque);
@@ -123,23 +120,23 @@ public class ChrisDrive extends OpMode {
          */
 
         // show motor group power
-        telemetry.addData("port motors power:", robotController.left_stick_y);
-        telemetry.addData("starboard motors power:", robotController.right_stick_y);
+        telemetry.addData("port motors power:", gamepad1.left_stick_y);
+        telemetry.addData("starboard motors power:", gamepad1.right_stick_y);
 
         // show sideways movement info
-        if (robotController.right_bumper || robotController.left_bumper) {
-            String sidewaysDirection = robotController.right_bumper ? "right" : "left";
+        if (gamepad1.right_bumper || gamepad1.left_bumper) {
+            String sidewaysDirection = gamepad1.right_bumper ? "right" : "left";
             telemetry.addData("sideways direction", sidewaysDirection);
         } else {
             telemetry.addData("sideways direction", "null");
         }
 
         // show arm data
-        double armRotationPower = robot.armRotationMotor.getPower();
-        double armRaisingPower  = robot.armBaseMotor.getPower();
+        //double armRotationPower = robot.armRotationMotor.getPower();
+        //double armRaisingPower  = robot.armBaseMotor.getPower();
 
-        telemetry.addData("arm rotation:", armRotationPower);
-        telemetry.addData("arm raising force:", armRaisingPower);
+        //telemetry.addData("arm rotation:", armRotationPower);
+        //telemetry.addData("arm raising force:", armRaisingPower);
     }
 
     /*
