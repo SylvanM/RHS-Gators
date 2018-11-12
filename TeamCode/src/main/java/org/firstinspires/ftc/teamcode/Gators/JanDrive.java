@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import java.util.concurrent.TimeUnit;
+
 
 /*
  * NOT A DRIVER MODE
@@ -81,7 +83,17 @@ public class JanDrive extends OpMode {
         telemetry.addLine("Jan is in control");
 
         // Detach from Lander
-        //robot.openClaw();
+        // robot.openClaw();
+
+        robot.setMotorGroup(ChrisHardware.MotorGroup.all, 1.0);
+
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.setMotorGroup(ChrisHardware.MotorGroup.all, 0.0);
     }
 
     /*

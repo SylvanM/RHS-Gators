@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.Gators;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 // GAMEPAD 1 controls MOTION of robot
@@ -108,12 +109,20 @@ public class ChrisDrive extends OpMode {
          * ARM CONTROL
          */
 
-        double armRotationTorque = gamepad2.right_trigger - gamepad2.left_trigger;
-        double armBaseRaisingTorque = gamepad2.right_stick_y;
+        double armRotationTorque =       gamepad2.right_trigger - gamepad2.left_trigger;
+        double armBaseRaisingTorque =    gamepad2.right_stick_y;
+        double armExtensionPower =       gamepad2.left_stick_y;
+
+        int clawOpenPower = 0; // -1 = close
+                               //  0 = nothing
+                               //  1 = open
+
+        clawOpenPower = (gamepad2.right_bumper ? 0 : 1) - (gamepad2.left_bumper ? 0 : 1);
 
         robot.rotateArm(armRotationTorque);
         robot.raiseArmBase(armBaseRaisingTorque);
-
+        robot.extendArm(armExtensionPower);
+        robot.openClaw(clawOpenPower);
 
         /*
          * TELEMETRY
@@ -132,11 +141,11 @@ public class ChrisDrive extends OpMode {
         }
 
         // show arm data
-        //double armRotationPower = robot.armRotationMotor.getPower();
-        //double armRaisingPower  = robot.armBaseMotor.getPower();
+        double armRotationPower = robot.armRotationMotor.getPower();
+        double armRaisingPower  = 0.0; // robot.armBaseMotor.getPower();
 
-        //telemetry.addData("arm rotation:", armRotationPower);
-        //telemetry.addData("arm raising force:", armRaisingPower);
+        telemetry.addData("arm rotation:", armRotationPower);
+        telemetry.addData("arm raising force:", armRaisingPower);
     }
 
     /*

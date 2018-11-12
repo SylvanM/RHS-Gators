@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Gators;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -60,6 +61,10 @@ public class ChrisHardware
 
     public DcMotor armRotationMotor;
     public DcMotor armBaseMotor;
+    public DcMotor armExtensionMotor;
+
+    public Servo   leftClawServo;
+    public Servo   rightClawServo;
 
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
@@ -86,6 +91,10 @@ public class ChrisHardware
 
         //armRotationMotor     = hwMap.get(DcMotor.class, "arm_rotation");
         //armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
+        //armExtensionMotor    = hwMap.get(DcMotor.class, "arm_extension");
+
+        //leftClawServo        = hwMap.get(Servo.class, "left_servo");
+        //rightClawServo       = hwMap.get(Servo.class, "right_servo");
 
         // These might need to be changed
         frontPortDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -100,7 +109,7 @@ public class ChrisHardware
         backStarboardDrive.setPower(0);
 
         // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
+        // May want to use RUN_USING_ENCODERS if encoders are installed. Encoders aren't installed yet
         frontPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -108,11 +117,20 @@ public class ChrisHardware
     }
 
     void rotateArm(double torque) {
-    //    armRotationMotor.setPower(torque);
+        armRotationMotor.setPower(torque);
     }
 
     void raiseArmBase(double torque) {
-    //    armBaseMotor.setPower(torque);
+        armBaseMotor.setPower(torque);
+    }
+
+    void extendArm(double power) {
+        armExtensionMotor.setPower(power);
+    }
+
+    void openClaw(int power) {
+        leftClawServo.setPosition(power);
+        rightClawServo.setPosition(-power);
     }
 
     void headSideways(Direction direction, double speed) {
@@ -146,6 +164,11 @@ public class ChrisHardware
             case back:
                 backPortDrive.setPower(power);
                 backStarboardDrive.setPower(power);
+            case all:
+                frontPortDrive.setPower(power);
+                frontStarboardDrive.setPower(power);
+                backPortDrive.setPower(power);
+                backStarboardDrive.setPower(power);
         }
     }
 
@@ -155,7 +178,7 @@ public class ChrisHardware
     }
 
     enum MotorGroup {
-        port, starboard, front, back
+        port, starboard, front, back, all
     }
 
 }
