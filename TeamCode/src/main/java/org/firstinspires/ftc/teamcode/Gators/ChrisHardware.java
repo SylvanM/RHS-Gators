@@ -59,7 +59,7 @@ public class ChrisHardware
     public DcMotor backPortDrive;
     public DcMotor backStarboardDrive;
 
-    public DcMotor armRotationMotor;
+    public DcMotor armRaisingMotor;
     public DcMotor armBaseMotor;
     public DcMotor armExtensionMotor;
 
@@ -89,12 +89,12 @@ public class ChrisHardware
         backPortDrive        = hwMap.get(DcMotor.class, "back_port");
         backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
 
-        //armRotationMotor     = hwMap.get(DcMotor.class, "arm_rotation");
-        //armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
-        //armExtensionMotor    = hwMap.get(DcMotor.class, "arm_extension");
+        armRaisingMotor     = hwMap.get(DcMotor.class, "arm_raising");
+        armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
+        armExtensionMotor    = hwMap.get(DcMotor.class, "arm_extension");
 
-        //leftClawServo        = hwMap.get(Servo.class, "left_servo");
-        //rightClawServo       = hwMap.get(Servo.class, "right_servo");
+        leftClawServo        = hwMap.get(Servo.class, "left_servo");
+        rightClawServo       = hwMap.get(Servo.class, "right_servo");
 
         // These might need to be changed
         frontPortDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -117,7 +117,7 @@ public class ChrisHardware
     }
 
     void rotateArm(double torque) {
-        armRotationMotor.setPower(torque);
+        armRaisingMotor.setPower(torque);
     }
 
     void raiseArmBase(double torque) {
@@ -128,9 +128,9 @@ public class ChrisHardware
         armExtensionMotor.setPower(power);
     }
 
-    void openClaw(int power) {
-        leftClawServo.setPosition(power);
-        rightClawServo.setPosition(-power);
+    void setClaw(double position) {
+        leftClawServo.setPosition(position);
+        rightClawServo.setPosition(-position);
     }
 
     void headSideways(Direction direction, double speed) {

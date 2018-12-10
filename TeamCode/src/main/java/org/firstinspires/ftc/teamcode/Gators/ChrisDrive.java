@@ -109,20 +109,21 @@ public class ChrisDrive extends OpMode {
          * ARM CONTROL
          */
 
-        double armRotationTorque =       gamepad2.right_trigger - gamepad2.left_trigger;
+        double armRotationTorque    =    gamepad2.right_trigger - gamepad2.left_trigger;
         double armBaseRaisingTorque =    gamepad2.right_stick_y;
-        double armExtensionPower =       gamepad2.left_stick_y;
-
-        int clawOpenPower = 0; // -1 = close
-                               //  0 = nothing
-                               //  1 = open
-
-        clawOpenPower = (gamepad2.right_bumper ? 0 : 1) - (gamepad2.left_bumper ? 0 : 1);
+        double armExtensionPower    =    gamepad2.left_stick_y;
 
         robot.rotateArm(armRotationTorque);
         robot.raiseArmBase(armBaseRaisingTorque);
         robot.extendArm(armExtensionPower);
-        robot.openClaw(clawOpenPower);
+
+        /*
+         * Claw Control
+         */
+
+        double clawPosition = 180.0;
+        if (gamepad2.right_bumper) { clawPosition = 0.0; }
+        robot.setClaw(clawPosition);
 
         /*
          * TELEMETRY
@@ -141,7 +142,7 @@ public class ChrisDrive extends OpMode {
         }
 
         // show arm data
-        double armRotationPower = robot.armRotationMotor.getPower();
+        double armRotationPower = robot.armRaisingMotor.getPower();
         double armRaisingPower  = 0.0; // robot.armBaseMotor.getPower();
 
         telemetry.addData("arm rotation:", armRotationPower);

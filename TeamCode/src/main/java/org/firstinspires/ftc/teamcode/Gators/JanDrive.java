@@ -83,12 +83,15 @@ public class JanDrive extends OpMode {
         telemetry.addLine("Jan is in control");
 
         // Detach from Lander
-        // robot.openClaw();
+        robot.setClaw(180.0);
 
-        robot.setMotorGroup(ChrisHardware.MotorGroup.all, 1.0);
+
 
         try {
+            robot.setMotorGroup(ChrisHardware.MotorGroup.all, 1.0); // go forward
             TimeUnit.SECONDS.sleep(5);
+
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
