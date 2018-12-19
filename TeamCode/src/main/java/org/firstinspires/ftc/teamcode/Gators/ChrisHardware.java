@@ -117,11 +117,11 @@ public class ChrisHardware
     }
 
     void rotateArm(double torque) {
-        armRaisingMotor.setPower(torque);
+        armBaseMotor.setPower(torque);
     }
 
     void raiseArmBase(double torque) {
-        armBaseMotor.setPower(torque);
+        armRaisingMotor.setPower(torque);
     }
 
     void extendArm(double power) {
@@ -129,8 +129,12 @@ public class ChrisHardware
     }
 
     void setClaw(double position) {
-        leftClawServo.setPosition(position);
-        rightClawServo.setPosition(-position);
+        double left = position;
+        double right = 180.0 - position;
+        // must account for different position of the servos
+
+        leftClawServo.setPosition(left);
+        rightClawServo.setPosition(right);
     }
 
     void headSideways(Direction direction, double speed) {
