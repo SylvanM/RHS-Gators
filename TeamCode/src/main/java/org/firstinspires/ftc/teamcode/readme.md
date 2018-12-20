@@ -20,4 +20,20 @@ public Servo   leftClawServo;       // servo controlling left side of the claw
 public Servo   rightClawServo;      // servo controlling right side of the claw
 ```
 
+There are also some basic functions for the control of the robot, able to be called by the ChrisDrive class or the AutoOp class
+
+```java
+void rotateArm(double torque) {
+    armBaseMotor.setPower(torque);
+}
+
+void raiseArmBase(double torque) {
+    armRaisingMotor.setPower(torque);
+}
+
+void extendArm(double power) {
+    armExtensionMotor.setPower(power);
+}
+```
+
 Note: A guide to programming control classes can be found [here](https://github.com/ftctechnh/ftc_app/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md)
