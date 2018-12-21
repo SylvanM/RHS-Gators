@@ -89,7 +89,7 @@ public class ChrisHardware
         backPortDrive        = hwMap.get(DcMotor.class, "back_port");
         backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
 
-        armRaisingMotor     = hwMap.get(DcMotor.class, "arm_raising");
+        armRaisingMotor      = hwMap.get(DcMotor.class, "arm_raising");
         armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
         armExtensionMotor    = hwMap.get(DcMotor.class, "arm_extension");
 
@@ -114,6 +114,13 @@ public class ChrisHardware
         frontStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // set certain motors to run with encoders
+        armRaisingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armExtensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // open claw
+        openClaw();
     }
 
     void rotateArm(double torque) {
@@ -130,11 +137,19 @@ public class ChrisHardware
 
     void setClaw(double position) {
         double left = position;
-        double right = 180.0 - position;
+        double right = position;
         // must account for different position of the servos
 
         leftClawServo.setPosition(left);
         rightClawServo.setPosition(right);
+    }
+
+    void openClaw()  {
+        setClaw(180.0);
+    }
+
+    void closeClaw() {
+        setClaw(0.0);
     }
 
     void headSideways(Direction direction, double speed) {

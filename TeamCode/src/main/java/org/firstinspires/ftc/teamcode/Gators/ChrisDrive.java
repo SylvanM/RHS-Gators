@@ -109,7 +109,7 @@ public class ChrisDrive extends OpMode {
          * ARM CONTROL
          */
 
-        double armRotationTorque    =    gamepad2.right_trigger - gamepad2.left_trigger;
+        double armRotationTorque    =    gamepad2.right_stick_x;
         double armBaseRaisingTorque =    gamepad2.right_stick_y;
         double armExtensionPower    =    gamepad2.left_stick_y;
 
@@ -121,9 +121,8 @@ public class ChrisDrive extends OpMode {
          * Claw Control
          */
 
-        double clawPosition = 180.0;
-        if (gamepad2.right_bumper) { clawPosition = 0.0; }
-        robot.setClaw(clawPosition);
+        if (gamepad2.right_bumper) {  robot.openClaw();  }
+        if (gamepad2.left_bumper)  {  robot.closeClaw(); }
 
         /*
          * TELEMETRY
