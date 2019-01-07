@@ -90,7 +90,7 @@ public class ChrisHardware
         backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
 
         armRaisingMotor      = hwMap.get(DcMotor.class, "arm_raising");
-        armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
+        // armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
         armExtensionMotor    = hwMap.get(DcMotor.class, "arm_extension");
 
         leftClawServo        = hwMap.get(Servo.class, "left_servo");
@@ -123,9 +123,9 @@ public class ChrisHardware
         openClaw();
     }
 
-    void rotateArm(double torque) {
-        armBaseMotor.setPower(torque);
-    }
+    //void rotateArm(double torque) {
+    //    armBaseMotor.setPower(torque);
+    //}
 
     void raiseArmBase(double torque) {
         armRaisingMotor.setPower(torque);
@@ -136,7 +136,7 @@ public class ChrisHardware
     }
 
     void setClaw(double position) {
-        double left = position;
+        double left = 180 - position;
         double right = position;
         // must account for different position of the servos
 

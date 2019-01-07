@@ -113,7 +113,7 @@ public class ChrisDrive extends OpMode {
         double armBaseRaisingTorque =    gamepad2.right_stick_y;
         double armExtensionPower    =    gamepad2.left_stick_y;
 
-        robot.rotateArm(armRotationTorque);
+        // robot.rotateArm(armRotationTorque);
         robot.raiseArmBase(armBaseRaisingTorque);
         robot.extendArm(armExtensionPower);
 
@@ -131,6 +131,7 @@ public class ChrisDrive extends OpMode {
         // show motor group power
         telemetry.addData("port motors power:", gamepad1.left_stick_y);
         telemetry.addData("starboard motors power:", gamepad1.right_stick_y);
+        telemetry.addData("left claw:", robot.leftClawServo.getPosition());
 
         // show sideways movement info
         if (gamepad1.right_bumper || gamepad1.left_bumper) {
