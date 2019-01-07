@@ -36,4 +36,21 @@ void extendArm(double power) {
 }
 ```
 
+## ChrisDrive
+Control class for remote control of the robot
+
+Current control setup:
+### Gamepad 1 - Robot Movement
+ * each of the joysticks controls the respective side of the robot. To go forward, press both joysticks forward. To turn right, push the left joystick up and pull back the right joystick.
+ * "Strafing" is controlled by the bumpers (these are located on the front side of the controller above the triggers)
+ * Right bumper -> strafe right
+ * Left bumper  -> strage left
+ 
+ ### Gamepad 2 - Arm Control
+ If you play video games, then controlling the robot is going to come a lot easier to you. The way it is set up is "inverted", meaning that pulling back on the right trigger makes the arm go up, and pushing forward makes it go down.
+ * Pull back on the right trigger to lift the arm, and vise versa
+ * Pushing the left joystick firwards extends the arm, and pulling it back retracts it.
+ * Press the right bumper to open the claw, and left bumper to close it
+ * Moving the right joystick left and right will rotate the arm.
+
 Note: A guide to programming control classes can be found [here](https://github.com/ftctechnh/ftc_app/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md)
