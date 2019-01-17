@@ -182,14 +182,20 @@ public class ChrisHardware
                 backPortDrive.setPower(power);
                 backStarboardDrive.setPower(power);
             case all:
+                frontStarboardDrive.setPower(power);
+                frontPortDrive.setPower(power);
+                backStarboardDrive.setPower(power);
+                backPortDrive.setPower(power);
+                /*
                 setStarboards(power);
                 setPorts(power);
+                */
         }
     }
 
     void setStarboards(double speed) {
-        frontStarboardDrive.setPower(-speed);
-        backStarboardDrive.setPower(-speed);
+        frontStarboardDrive.setPower(speed);
+        backStarboardDrive.setPower(speed);
     }
 
     void setPorts(double speed) {
