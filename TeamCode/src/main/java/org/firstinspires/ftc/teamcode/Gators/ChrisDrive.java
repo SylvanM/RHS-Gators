@@ -97,6 +97,9 @@ public class ChrisDrive extends OpMode {
          * To move side to side: Press the respective bumper buttons on the controller in relation to where you want to go
          */
 
+        // test
+        robot.setMotorGroup(ChrisHardware.MotorGroup.all, gamepad1.right_trigger);
+
         // move left and right
         if (gamepad1.right_bumper) { robot.headSideways(ChrisHardware.Direction.right, 1); }
         if (gamepad1.left_bumper)  { robot.headSideways(ChrisHardware.Direction.left, 1); }

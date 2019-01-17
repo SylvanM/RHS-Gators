@@ -110,10 +110,10 @@ public class ChrisHardware
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed. Encoders aren't installed yet
-        frontPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontPortDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontStarboardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backPortDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backStarboardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // set certain motors to run with encoders
         armRaisingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -172,11 +172,9 @@ public class ChrisHardware
     void setMotorGroup(MotorGroup group, double power) {
         switch (group) {
             case port:
-                frontPortDrive.setPower(power);
-                backPortDrive.setPower(power);
+                setPorts(power);
             case starboard:
-                frontStarboardDrive.setPower(power);
-                backStarboardDrive.setPower(power);
+                setStarboards(power);
             case front:
                 frontPortDrive.setPower(power);
                 frontStarboardDrive.setPower(power);
@@ -184,11 +182,19 @@ public class ChrisHardware
                 backPortDrive.setPower(power);
                 backStarboardDrive.setPower(power);
             case all:
-                frontPortDrive.setPower(power);
-                frontStarboardDrive.setPower(power);
-                backPortDrive.setPower(power);
-                backStarboardDrive.setPower(power);
+                setStarboards(power);
+                setPorts(power);
         }
+    }
+
+    void setStarboards(double speed) {
+        frontStarboardDrive.setPower(-speed);
+        backStarboardDrive.setPower(-speed);
+    }
+
+    void setPorts(double speed) {
+        frontPortDrive.setPower(speed);
+        backPortDrive.setPower(speed);
     }
 
     // lets us have 2 values for direction
