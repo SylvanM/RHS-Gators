@@ -98,15 +98,22 @@ public class ChrisDrive extends OpMode {
          */
 
         // test
-        robot.setMotorGroup(ChrisHardware.MotorGroup.all, gamepad1.right_trigger);
+        robot.frontStarboardDrive.setPower(gamepad1.right_trigger);
 
-        // move left and right
-        if (gamepad1.right_bumper) { robot.headSideways(ChrisHardware.Direction.right, 1); }
-        if (gamepad1.left_bumper)  { robot.headSideways(ChrisHardware.Direction.left, 1); }
 
-        // control separate sides (tank drive)
-        robot.setMotorGroup(ChrisHardware.MotorGroup.port, -gamepad1.left_stick_y);
-        robot.setMotorGroup(ChrisHardware.MotorGroup.starboard, gamepad1.right_stick_y);
+
+        double Ch1;
+        double Ch2;
+        double Ch3;
+
+        Ch1 = -gamepad1.right_stick_y/1.75;
+        Ch2 = gamepad1.right_stick_x/1.75;
+        Ch3 = gamepad1.left_stick_x/1.75;
+
+        robot.frontPortDrive.setPower(Ch3 + Ch1 + Ch2);
+        robot.backPortDrive.setPower(Ch1 + Ch2 - Ch3);
+        robot.frontStarboardDrive.setPower(Ch2 - Ch1 + Ch3);
+        robot.backStarboardDrive.setPower(Ch2 - Ch1 - Ch3);
 
         /*
          * ARM CONTROL
@@ -132,7 +139,7 @@ public class ChrisDrive extends OpMode {
          */
 
         // show motor group power
-        telemetry.addData("port motors power:", gamepad1.left_stick_y);
+        telemetry.addData("port motors power:", robot.frontStarboardDrive.getPower());
         telemetry.addData("starboard motors power:", gamepad1.right_stick_y);
         telemetry.addData("left claw:", robot.leftClawServo.getPosition());
 

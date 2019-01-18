@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Gators;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -102,22 +103,23 @@ public class ChrisHardware
         backPortDrive.setDirection(DcMotor.Direction.FORWARD);
         backStarboardDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        // Set all motors to zero power
+        /*
+        // Set all motors to zero power/
         frontPortDrive.setPower(0);
         frontStarboardDrive.setPower(0);
         backPortDrive.setPower(0);
         backStarboardDrive.setPower(0);
-
+*/
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed. Encoders aren't installed yet
-        frontPortDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontStarboardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backPortDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backStarboardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set certain motors to run with encoders
-        armRaisingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armExtensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armRaisingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armExtensionMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // open claw
         openClaw();
