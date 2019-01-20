@@ -96,19 +96,29 @@ public class OmniControl extends OpMode {
          */
 
         /*
-         * LINEAR MOVEMENT
+         * WHEEL MOVEMENT
          */
 
-        float wheelCoefficients[] = new float[4];
+        double pi = Math.PI;
 
-        float x = gamepad1.left_stick_x;
-        float y = gamepad1.left_stick_y;
+        double wheelCoefficients[] = new double[4];
 
-        float angle = getAngle(x, y);
-        float linearSpeed = pythag(x, y);
-        float rotarySpeed = gamepad1.right_stick_x;
+        double x = (double) gamepad1.left_stick_x;
+        double y = (double) gamepad1.left_stick_y;
 
+        double angle = getAngle(x, y);
+        double linearSpeed = getMagnitude(x, y);
+        double rotarySpeed = (double) gamepad1.right_stick_x;
 
+        wheelCoefficients[0] = linearSpeed * Math.sin(angle + (pi / 4)) + rotarySpeed;
+        wheelCoefficients[1] = linearSpeed * Math.cos(angle + (pi / 4)) - rotarySpeed;
+        wheelCoefficients[2] = linearSpeed * Math.cos(angle + (pi / 4)) + rotarySpeed;
+        wheelCoefficients[3] = linearSpeed * Math.cos(angle + (pi / 4)) - rotarySpeed;
+
+        robot.frontLeft.setPower(wheelCoefficients[0]);
+        robot.frontRight.setPower(wheelCoefficients[1]);
+        robot.backLeft.setPower(wheelCoefficients[2]);
+        robot.backRight.setPower(wheelCoefficients[3]);
 
     }
 
@@ -124,8 +134,8 @@ public class OmniControl extends OpMode {
 
     // methods
 
-    public float getAngle(float x, float y) {
-        float angle = (float) Math.toDegrees(Math.atan2(y, x));
+    public double getAngle(double x, double y) {
+        double angle = (double) Math.toDegrees(Math.atan2(y, x));
 
         if(angle < 0){
             angle += 360;
@@ -134,11 +144,11 @@ public class OmniControl extends OpMode {
         return angle;
     }
 
-    public float pythag(float a, float b) {
+    public double getMagnitude(double a, double b) {
         float exponent = 2;
         float aSquared = (float) Math.pow(a, exponent);
         float bSquared = (float) Math.pow(b, exponent);
-        float sum = aSquared + bSquared;
+        double sum = (double)aSquared + (double)bSquared;
 
         return Math.sqrt(sum);
     }

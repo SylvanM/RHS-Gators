@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * This is the Robot's automonous driver mode
  */
 
-@Autonomous//(name="Pushbot: Teleop Tank", group="Pushbot")
+@Autonomous(name="Janny Smanny", group="AutoOp")
 //@Disabled
 public class JanDrive extends OpMode {
 

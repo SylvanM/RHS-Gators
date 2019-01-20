@@ -7,10 +7,10 @@ This is the class that establishes the hardware for the robot.
 For every motor on the robot, there is a class instance of either a DcMotor or a Servo.
 
 ```java
-public DcMotor frontPortDrive;      // front left wheel
-public DcMotor frontStarboardDrive; // front right wheel
-public DcMotor backPortDrive;       // back left wheel
-public DcMotor backStarboardDrive;  // back right wheeel
+public DcMotor frontLeft;      // front left wheel
+public DcMotor frontRight; // front right wheel
+public DcMotor backLeft;       // back left wheel
+public DcMotor backRight;  // back right wheeel
 
 public DcMotor armRaisingMotor;     // motor to raise and lower the arm
 public DcMotor armBaseMotor;        // motor to rotate the arm

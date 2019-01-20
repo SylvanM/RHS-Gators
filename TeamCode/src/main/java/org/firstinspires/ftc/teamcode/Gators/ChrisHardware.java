@@ -55,10 +55,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class ChrisHardware
 {
     /* Public OpMode members. */
-    public DcMotor frontPortDrive;
-    public DcMotor frontStarboardDrive;
-    public DcMotor backPortDrive;
-    public DcMotor backStarboardDrive;
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
 
     public DcMotor armRaisingMotor;
     public DcMotor armBaseMotor;
@@ -85,10 +85,10 @@ public class ChrisHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        frontPortDrive       = hwMap.get(DcMotor.class, "front_port");
-        frontStarboardDrive  = hwMap.get(DcMotor.class, "front_starboard");
-        backPortDrive        = hwMap.get(DcMotor.class, "back_port");
-        backStarboardDrive   = hwMap.get(DcMotor.class, "back_starboard");
+        frontLeft       = hwMap.get(DcMotor.class, "front_left");
+        frontRight  = hwMap.get(DcMotor.class, "front_right");
+        backLeft        = hwMap.get(DcMotor.class, "back_left");
+        backRight   = hwMap.get(DcMotor.class, "back_right");
 
         armRaisingMotor      = hwMap.get(DcMotor.class, "arm_raising");
         // armBaseMotor         = hwMap.get(DcMotor.class, "arm_base");
@@ -98,24 +98,24 @@ public class ChrisHardware
         rightClawServo       = hwMap.get(Servo.class, "right_servo");
 
         // These might need to be changed
-        frontPortDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontStarboardDrive.setDirection(DcMotor.Direction.FORWARD);
-        backPortDrive.setDirection(DcMotor.Direction.FORWARD);
-        backStarboardDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
 
         /*
         // Set all motors to zero power/
-        frontPortDrive.setPower(0);
-        frontStarboardDrive.setPower(0);
-        backPortDrive.setPower(0);
-        backStarboardDrive.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
 */
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed. Encoders aren't installed yet
-        frontPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backPortDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backStarboardDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set certain motors to run with encoders
         armRaisingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -157,17 +157,17 @@ public class ChrisHardware
     void headSideways(Direction direction, double speed) {
         switch (direction) {
             case left:
-                frontPortDrive.setPower(-speed);
-                frontStarboardDrive.setPower(-speed);
+                frontLeft.setPower(-speed);
+                frontRight.setPower(-speed);
 
-                backPortDrive.setPower(speed);
-                backStarboardDrive.setPower(speed);
+                backLeft.setPower(speed);
+                backRight.setPower(speed);
             case right:
-                frontPortDrive.setPower(speed);
-                frontStarboardDrive.setPower(speed);
+                frontLeft.setPower(speed);
+                frontRight.setPower(speed);
 
-                backPortDrive.setPower(-speed);
-                backStarboardDrive.setPower(-speed);
+                backLeft.setPower(-speed);
+                backRight.setPower(-speed);
         }
     }
 
@@ -178,16 +178,16 @@ public class ChrisHardware
             case starboard:
                 setStarboards(power);
             case front:
-                frontPortDrive.setPower(power);
-                frontStarboardDrive.setPower(power);
+                frontLeft.setPower(power);
+                frontRight.setPower(power);
             case back:
-                backPortDrive.setPower(power);
-                backStarboardDrive.setPower(power);
+                backLeft.setPower(power);
+                backRight.setPower(power);
             case all:
-                frontStarboardDrive.setPower(power);
-                frontPortDrive.setPower(power);
-                backStarboardDrive.setPower(power);
-                backPortDrive.setPower(power);
+                frontRight.setPower(power);
+                frontLeft.setPower(power);
+                backRight.setPower(power);
+                backLeft.setPower(power);
                 /*
                 setStarboards(power);
                 setPorts(power);
@@ -196,13 +196,13 @@ public class ChrisHardware
     }
 
     void setStarboards(double speed) {
-        frontStarboardDrive.setPower(speed);
-        backStarboardDrive.setPower(speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
     }
 
     void setPorts(double speed) {
-        frontPortDrive.setPower(speed);
-        backPortDrive.setPower(speed);
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
     }
 
     // lets us have 2 values for direction

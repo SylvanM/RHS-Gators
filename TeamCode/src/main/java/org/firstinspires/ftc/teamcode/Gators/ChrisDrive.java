@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import java.util.concurrent.TimeUnit;
+
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
@@ -59,10 +61,6 @@ public class ChrisDrive extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Driver");
     }
 
     /*
@@ -98,9 +96,7 @@ public class ChrisDrive extends OpMode {
          */
 
         // test
-        robot.frontStarboardDrive.setPower(gamepad1.right_trigger);
-
-
+        robot.frontRight.setPower(gamepad1.right_trigger);
 
         double Ch1;
         double Ch2;
@@ -110,18 +106,18 @@ public class ChrisDrive extends OpMode {
         Ch2 = gamepad1.right_stick_x/1.75;
         Ch3 = gamepad1.left_stick_x/1.75;
 
-        robot.frontPortDrive.setPower(Ch3 + Ch1 + Ch2);
-        robot.backPortDrive.setPower(Ch1 + Ch2 - Ch3);
-        robot.frontStarboardDrive.setPower(Ch2 - Ch1 + Ch3);
-        robot.backStarboardDrive.setPower(Ch2 - Ch1 - Ch3);
+        robot.frontLeft.setPower(Ch3 + Ch1 + Ch2);
+        robot.backLeft.setPower(Ch1 + Ch2 - Ch3);
+        robot.frontRight.setPower(Ch2 - Ch1 + Ch3);
+        robot.backRight.setPower(Ch2 - Ch1 - Ch3);
 
         /*
          * ARM CONTROL
          */
 
-        double armRotationTorque    =    gamepad2.right_stick_x;
-        double armBaseRaisingTorque =    gamepad2.right_stick_y;
-        double armExtensionPower    =    gamepad2.left_stick_y;
+        double armRotationTorque    = gamepad2.right_stick_x;
+        double armBaseRaisingTorque = gamepad2.right_stick_y;
+        double armExtensionPower    = gamepad2.left_stick_y;
 
         // robot.rotateArm(armRotationTorque);
         robot.raiseArmBase(armBaseRaisingTorque);
@@ -139,7 +135,7 @@ public class ChrisDrive extends OpMode {
          */
 
         // show motor group power
-        telemetry.addData("port motors power:", robot.frontStarboardDrive.getPower());
+        telemetry.addData("port motors power:", robot.frontRight.getPower());
         telemetry.addData("starboard motors power:", gamepad1.right_stick_y);
         telemetry.addData("left claw:", robot.leftClawServo.getPosition());
 
