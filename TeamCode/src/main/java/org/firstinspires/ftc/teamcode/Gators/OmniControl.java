@@ -42,10 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class OmniControl extends OpMode {
 
     /* Declare OpMode members. */
-    private ChrisHardware robot         = new ChrisHardware(); // use the class created to define a Pushbot's hardware
+    private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
-    private double          clawOffset  = 0.0;                // Servo mid position
-    private final double    CLAW_SPEED  = 0.02;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -112,31 +110,31 @@ public class OmniControl extends OpMode {
         double linearSpeed = getMagnitude(x, y);
         double rotarySpeed = (double) gamepad1.right_stick_x;
 
-        wheelCoefficients[0] = linearSpeed * Math.sin(angle + (pi / 4)) + rotarySpeed;
-        wheelCoefficients[1] = linearSpeed * Math.cos(angle + (pi / 4)) - rotarySpeed;
-        wheelCoefficients[2] = linearSpeed * Math.cos(angle + (pi / 4)) + rotarySpeed;
-        wheelCoefficients[3] = linearSpeed * Math.cos(angle + (pi / 4)) - rotarySpeed;
+        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle) + (pi / 4)) + rotarySpeed;
+        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle) + (pi / 4)) - rotarySpeed;
+        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle) + (pi / 4)) + rotarySpeed;
+        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle) + (pi / 4)) - rotarySpeed;
 
 
         // finer control (for more advanced drivers)
 
-        wheelCoefficients = new double[]{0, 0, 0, 0}; // clear all the coefficients
+        wheelCoefficients = new double[] {0, 0, 0, 0}; // clear all the coefficients
         // now set each wheel to what the controller tells it
 
         if (gamepad1.left_bumper) {
-            wheelCoefficients[0] = -1;
-            wheelCoefficients[1] = 1;
+            wheelCoefficients[2] = 1;
+            wheelCoefficients[3] = -1;
         } else if (gamepad1.right_bumper) {
-            wheelCoefficients[0] = 1;
-            wheelCoefficients[1] = -1;
+            wheelCoefficients[2] = 1;
+            wheelCoefficients[3] = -1;
         }
 
         else if (gamepad1.left_trigger > 0) {
-            wheelCoefficients[2] = 1;
-            wheelCoefficients[3] = -1;
+            wheelCoefficients[0] = 1;
+            wheelCoefficients[1] = -1;
         } else if (gamepad1.right_trigger > 0) {
-            wheelCoefficients[2] = -1;
-            wheelCoefficients[3] = 1;
+            wheelCoefficients[0] = -1;
+            wheelCoefficients[1] = 1;
         }
 
 
@@ -150,6 +148,8 @@ public class OmniControl extends OpMode {
         /*
          * GADGET CONTROL
          */
+
+
 
     }
 
@@ -165,17 +165,19 @@ public class OmniControl extends OpMode {
 
     // methods
 
-    public double getAngle(double x, double y) {
-        double angle = (double) Math.toDegrees(Math.atan2(y, x));
+    private double getAngle(double x, double y) {
+        double angle = Math.toDegrees(Math.atan2(y, x));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
+        } else if (angle > 360) {
+            angle -= 360;
         }
 
         return angle;
     }
 
-    public double getMagnitude(double a, double b) {
+    private double getMagnitude(double a, double b) {
         float exponent = 2;
         float aSquared = (float) Math.pow(a, exponent);
         float bSquared = (float) Math.pow(b, exponent);

@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open right claw: "right_hand"
  */
 
-public class ChrisHardware
+public class RobotHardware
 {
     /* Public OpMode members. */
     public DcMotor frontLeft;
@@ -71,11 +71,11 @@ public class ChrisHardware
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    private HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public ChrisHardware() {
+    public RobotHardware() {
 
     }
 
@@ -121,8 +121,6 @@ public class ChrisHardware
         armRaisingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armExtensionMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // open claw
-        openClaw();
     }
 
     //void rotateArm(double torque) {
@@ -152,57 +150,6 @@ public class ChrisHardware
 
     void closeClaw() {
         setClaw(0.0);
-    }
-
-    void headSideways(Direction direction, double speed) {
-        switch (direction) {
-            case left:
-                frontLeft.setPower(-speed);
-                frontRight.setPower(-speed);
-
-                backLeft.setPower(speed);
-                backRight.setPower(speed);
-            case right:
-                frontLeft.setPower(speed);
-                frontRight.setPower(speed);
-
-                backLeft.setPower(-speed);
-                backRight.setPower(-speed);
-        }
-    }
-
-    void setMotorGroup(MotorGroup group, double power) {
-        switch (group) {
-            case port:
-                setPorts(power);
-            case starboard:
-                setStarboards(power);
-            case front:
-                frontLeft.setPower(power);
-                frontRight.setPower(power);
-            case back:
-                backLeft.setPower(power);
-                backRight.setPower(power);
-            case all:
-                frontRight.setPower(power);
-                frontLeft.setPower(power);
-                backRight.setPower(power);
-                backLeft.setPower(power);
-                /*
-                setStarboards(power);
-                setPorts(power);
-                */
-        }
-    }
-
-    void setStarboards(double speed) {
-        frontRight.setPower(speed);
-        backRight.setPower(speed);
-    }
-
-    void setPorts(double speed) {
-        frontLeft.setPower(speed);
-        backLeft.setPower(speed);
     }
 
     // lets us have 2 values for direction

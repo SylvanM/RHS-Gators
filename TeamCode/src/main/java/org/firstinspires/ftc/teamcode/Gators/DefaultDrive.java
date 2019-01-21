@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit;
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@TeleOp(name="Chris Drive", group="Tank Control")
+@TeleOp(name="Default Drive Control", group="Tank Control")
 //@Disabled
-public class ChrisDrive extends OpMode {
+public class DefaultDrive extends OpMode {
 
     /* Declare OpMode members. */
-    private ChrisHardware robot         = new ChrisHardware(); // use the class created to define a Pushbot's hardware
+    private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
     private double          clawOffset  = 0.0;                // Servo mid position
     private final double    CLAW_SPEED  = 0.02;
