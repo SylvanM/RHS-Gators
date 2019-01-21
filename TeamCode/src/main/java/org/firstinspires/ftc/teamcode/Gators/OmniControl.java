@@ -99,6 +99,8 @@ public class OmniControl extends OpMode {
          * WHEEL MOVEMENT
          */
 
+        // math for calculating standard control
+
         double pi = Math.PI;
 
         double wheelCoefficients[] = new double[4];
@@ -115,10 +117,39 @@ public class OmniControl extends OpMode {
         wheelCoefficients[2] = linearSpeed * Math.cos(angle + (pi / 4)) + rotarySpeed;
         wheelCoefficients[3] = linearSpeed * Math.cos(angle + (pi / 4)) - rotarySpeed;
 
+
+        // finer control (for more advanced drivers)
+
+        wheelCoefficients = new double[]{0, 0, 0, 0}; // clear all the coefficients
+        // now set each wheel to what the controller tells it
+
+        if (gamepad1.left_bumper) {
+            wheelCoefficients[0] = -1;
+            wheelCoefficients[1] = 1;
+        } else if (gamepad1.right_bumper) {
+            wheelCoefficients[0] = 1;
+            wheelCoefficients[1] = -1;
+        }
+
+        else if (gamepad1.left_trigger > 0) {
+            wheelCoefficients[2] = 1;
+            wheelCoefficients[3] = -1;
+        } else if (gamepad1.right_trigger > 0) {
+            wheelCoefficients[2] = -1;
+            wheelCoefficients[3] = 1;
+        }
+
+
+        // set all motors to corresponding coefficients
         robot.frontLeft.setPower(wheelCoefficients[0]);
         robot.frontRight.setPower(wheelCoefficients[1]);
         robot.backLeft.setPower(wheelCoefficients[2]);
         robot.backRight.setPower(wheelCoefficients[3]);
+
+
+        /*
+         * GADGET CONTROL
+         */
 
     }
 
