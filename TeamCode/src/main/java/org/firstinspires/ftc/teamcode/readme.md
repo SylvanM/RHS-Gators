@@ -2,7 +2,7 @@
 
 Code can be found in the "Gators" folder
 
-## ChrisHardware
+## RobotHardware
 This is the class that establishes the hardware for the robot.
 For every motor on the robot, there is a class instance of either a DcMotor or a Servo.
 
@@ -20,7 +20,7 @@ public Servo   leftClawServo;       // servo controlling left side of the claw
 public Servo   rightClawServo;      // servo controlling right side of the claw
 ```
 
-There are also some basic functions for the control of the robot, able to be called by the ChrisDrive class or the AutoOp class
+There are also some basic functions for the control of the robot, able to be called by the DefaultDrive class or the AutoOp class
 
 ```java
 void rotateArm(double torque) {
@@ -36,7 +36,7 @@ void extendArm(double power) {
 }
 ```
 
-## ChrisDrive
+## DefaultDrive
 Control class for remote control of the robot
 
 Current control setup:
