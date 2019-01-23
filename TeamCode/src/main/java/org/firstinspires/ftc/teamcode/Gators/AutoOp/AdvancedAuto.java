@@ -27,10 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Gators;
+package org.firstinspires.ftc.teamcode.Gators.AutoOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+// hardware class
+import org.firstinspires.ftc.teamcode.Gators.Hardware.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -46,9 +50,11 @@ public class AdvancedAuto extends OpMode {
 
     /* Declare OpMode members. */
     private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
+    private ElapsedTime runtime = new ElapsedTime();
     private double          clawOffset  = 0.0 ;                  // Servo mid position
     private final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
-
+    private final double    DESIRED_COLOR[] = new double[] {0, 0, 0}; // RGB Values of gold mineral
+    private int mineralsTested = 0;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -78,7 +84,8 @@ public class AdvancedAuto extends OpMode {
      */
     @Override
     public void start() {
-
+        runtime.startTime();
+        robot.lowerDistanceSensor();
     }
 
     /*
@@ -86,6 +93,35 @@ public class AdvancedAuto extends OpMode {
      */
     @Override
     public void loop() {
+
+        // TODO: detach from lander
+
+        // begin testing minerals
+
+        while (robot.getDistance() > robot.WIDTH_OF_ROBOT) { // while there is no object directly in front of the robot
+            robot.move(.1, 0, 0); // move forward
+        }
+        robot.stop();
+
+        while (mineralsTested < 3) {
+            while (robot.getDistance() > robot.COLOR_SENSOR_RANGE) {
+                robot.move(.1,0,90);
+            }
+            robot.stop();
+
+            double detectedColors[] = new double[] {robot.colorSensor.red(), robot.colorSensor.blue(), robot.colorSensor.green()};
+            mineralsTested++;
+            if (arrayIsClose(detectedColors, DESIRED_COLOR, 10)) {
+                // knock off that ball
+                moveBot(.5,0,90,1);
+            } else {
+                robot.raiseDistanceSensor();
+                moveBot(1, 0, 90, 1);
+                robot.lowerDistanceSensor();
+            }
+        }
+
+        // mineral thing is done! Woot woot
 
     }
 
@@ -97,5 +133,46 @@ public class AdvancedAuto extends OpMode {
 
         // Code runs on stop
 
+
+        robot.raiseDistanceSensor();
+
     }
+
+    private void moveBot(double linearSpeed, double rotarySpeed, double angle, double forSeconds) {
+        sleep(forSeconds);
+        robot.stop();
+    }
+
+    private void sleep(double seconds) {
+        long millis = (long)seconds * 1000;
+        try {
+            wait(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // for color sensing
+    boolean doubleIsClose(double testedDouble, double target, double tolerance) {
+        if (Math.abs(testedDouble - target) < Math.abs(tolerance)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean arrayIsClose(double testedArray[], double targetArray[], double tolerance) {
+        if (testedArray.length != targetArray.length) {
+            return false;
+        }
+
+        for (int index = 0; index < targetArray.length; index++) {
+            if (!doubleIsClose(testedArray[index], targetArray[index], tolerance)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
