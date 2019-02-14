@@ -125,9 +125,16 @@ public class RobotHardware
     }
 
     /* Initialize standard Hardware interfaces */
+
+    /**
+     * Function that initializes the robot from a hardware map
+     * @param ahwMap
+     */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
+
+        // Comment out if the robot does not have that hardware:
 
         // Define and Initialize Motors
         frontLeft  = hwMap.get(DcMotor.class, "front_left");
@@ -135,47 +142,48 @@ public class RobotHardware
         backLeft   = hwMap.get(DcMotor.class, "back_left");
         backRight  = hwMap.get(DcMotor.class, "back_right");
 
-        armRaisingMotor   = hwMap.get(DcMotor.class, "arm_raising");
-        armExtensionMotor = hwMap.get(DcMotor.class, "arm_extension");
+        //armRaisingMotor   = hwMap.get(DcMotor.class, "arm_raising");
+        //armExtensionMotor = hwMap.get(DcMotor.class, "arm_extension");
 
-        leftClawServo  = hwMap.get(Servo.class, "left_servo");
-        rightClawServo = hwMap.get(Servo.class, "right_servo");
+        //leftClawServo  = hwMap.get(Servo.class, "left_servo");
+        //rightClawServo = hwMap.get(Servo.class, "right_servo");
 
         // SENSORS
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
-        colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
+        //imu = hwMap.get(BNO055IMU.class, "imu");
+        //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
+        //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
 
         // These might need to be changed
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to run with encoders.
         // May want to use RUN_USING_ENCODER if encoders are installed.
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set certain motors to run with encoders
-        armRaisingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armExtensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //armRaisingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //armExtensionMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set up sensors
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(parameters);
+
+        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        //parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        //parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        //parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        //parameters.loggingEnabled      = true;
+        //parameters.loggingTag          = "IMU";
+        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        //imu.initialize(parameters);
 
     }
 
