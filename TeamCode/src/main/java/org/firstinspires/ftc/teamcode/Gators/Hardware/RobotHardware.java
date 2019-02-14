@@ -154,10 +154,10 @@ public class RobotHardware
         //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
 
         // These might need to be changed
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to run with encoders.
         // May want to use RUN_USING_ENCODER if encoders are installed.
