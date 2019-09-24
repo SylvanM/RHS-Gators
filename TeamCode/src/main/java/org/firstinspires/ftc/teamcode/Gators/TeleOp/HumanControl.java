@@ -39,9 +39,9 @@ import java.util.concurrent.TimeUnit;
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@TeleOp(name="Omnidirectional control", group="Tank Control")
+@TeleOp(name="Human control", group="Omnidirectional Control")
 //@Disabled
-public class OmniControl extends OpMode {
+public class HumanControl extends OpMode {
 
     /* Declare OpMode members. */
     private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
@@ -77,7 +77,7 @@ public class OmniControl extends OpMode {
     @Override
     public void start() {
         // Run on start
-        telemetry.addLine("Driver in control!");
+        telemetry.addLine("Driver in control, inputs now will have effect on robot.");
     }
 
     /*
@@ -85,6 +85,11 @@ public class OmniControl extends OpMode {
      */
     @Override
     public void loop() {
+        // might have to remove this
+        telemetry.clear();
+
+        int i;
+
         /*
          * This part of the loop function controls the actual motion of the robot
          *
@@ -117,8 +122,6 @@ public class OmniControl extends OpMode {
         wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 90)) + rotarySpeed;
         wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 90)) - rotarySpeed;
 
-        telemetry.addData("math:", (linearSpeed * Math.sin(Math.toRadians(angle + 90))));
-
 
         // finer control (for more advanced drivers)
         // now set each wheel to what the controller tells it
@@ -146,21 +149,33 @@ public class OmniControl extends OpMode {
         robot.backLeft.setPower(wheelCoefficients[2]);
         robot.backRight.setPower(wheelCoefficients[3]);
 
-        telemetry.addData("angle:", angle);
+        /*
+         * MOVEMENT TELEMETRY
+         */
 
-        telemetry.addData("speed:", linearSpeed);
+        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
 
-        telemetry.addData("1:", wheelCoefficients[0]);
-        telemetry.addData("2:", wheelCoefficients[1]);
-        telemetry.addData("3:", wheelCoefficients[2]);
-        telemetry.addData("4:", wheelCoefficients[3]);
+        // list power being sent to each wheel
+        telemetry.addLine("\nPower to each wheel");
+        telemetry.addData("0: ", wheelCoefficients[0]);
+        telemetry.addData("1: ", wheelCoefficients[1]);
+        telemetry.addData("2: ", wheelCoefficients[2]);
+        telemetry.addData("3: ", wheelCoefficients[3]);
 
 
         /*
          * GADGET CONTROL
          */
 
+        /*
+         * TELEMETRY
+         */
 
+        // show power to wheels
+        for ( i = 0; i < 4; ++i ) {
+            // shows power of wheel i
+            telemetry.addData(Integer.toString(i + 1), wheelCoefficients[i]);
+        }
 
     }
 
