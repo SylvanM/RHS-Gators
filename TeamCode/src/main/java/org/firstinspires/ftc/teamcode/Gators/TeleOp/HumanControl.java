@@ -29,9 +29,12 @@
 
 package org.firstinspires.ftc.teamcode.Gators.TeleOp;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Gators.Hardware.*;
 
 import java.util.concurrent.TimeUnit;
@@ -61,6 +64,30 @@ public class HumanControl extends OpMode {
 
         robot.init(hardwareMap);
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode                 = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit            = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled       = true;
+
+        // the initial position used for calibration
+        Position initialPos = new Position();
+        initialPos.x = 0;
+        initialPos.y = 0;
+        initialPos.z = 0;
+
+        Velocity initialVel = new Velocity();
+        initialVel.xVeloc = 0;
+        initialVel.yVeloc = 0;
+        initialVel.zVeloc = 0;
+
+        robot.imu.initialize(parameters);
+        robot.imu.startAccelerationIntegration(initialPos, initialVel, 250);
+
+
+        // Code runs in a loop after init button pressed
+        telemetry.addData("Calibration Status:", robot.imu.getCalibrationStatus().toString());
+
     }
 
     /*
@@ -68,7 +95,9 @@ public class HumanControl extends OpMode {
      */
     @Override
     public void init_loop() {
-        // Code runs in a loop after init button pressed
+        telemetry.addData("Gyro Calibration", robot.imu.isGyroCalibrated());
+        telemetry.addData("Acel Calibration", robot.imu.isAccelerometerCalibrated());
+        telemetry.addData("Calibration Status", Integer.toBinaryString(robot.imu.getCalibrationStatus().calibrationStatus));
     }
 
     /*
@@ -110,17 +139,17 @@ public class HumanControl extends OpMode {
 
         double wheelCoefficients[] = new double[4];
 
-        double x = (double) gamepad1.left_stick_x;
+        double x = (double) -gamepad1.left_stick_x;
         double y = (double) gamepad1.left_stick_y;
 
         double angle = getAngle(x, y);
         double linearSpeed = getMagnitude(x, y);
         double rotarySpeed = (double) gamepad1.right_stick_x;
 
-        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 90)) + rotarySpeed;
-        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle + 90)) - rotarySpeed;
-        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 90)) + rotarySpeed;
-        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 90)) - rotarySpeed;
+        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
+        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
+        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
+        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
 
 
         // finer control (for more advanced drivers)
@@ -144,31 +173,13 @@ public class HumanControl extends OpMode {
 
 
         // set all motors to corresponding coefficients
-        robot.frontLeft.setPower(wheelCoefficients[0]);
-        robot.frontRight.setPower(wheelCoefficients[1]);
-        robot.backLeft.setPower(wheelCoefficients[2]);
-        robot.backRight.setPower(wheelCoefficients[3]);
+        robot.frontLeft.setPower  (wheelCoefficients[0]);
+        robot.frontRight.setPower (wheelCoefficients[1]);
+        robot.backLeft.setPower   (wheelCoefficients[2]);
+        robot.backRight.setPower  (wheelCoefficients[3]);
 
         /*
          * MOVEMENT TELEMETRY
-         */
-
-        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
-
-        // list power being sent to each wheel
-        telemetry.addLine("\nPower to each wheel");
-        telemetry.addData("0: ", wheelCoefficients[0]);
-        telemetry.addData("1: ", wheelCoefficients[1]);
-        telemetry.addData("2: ", wheelCoefficients[2]);
-        telemetry.addData("3: ", wheelCoefficients[3]);
-
-
-        /*
-         * GADGET CONTROL
-         */
-
-        /*
-         * TELEMETRY
          */
 
         // show power to wheels
@@ -176,6 +187,45 @@ public class HumanControl extends OpMode {
             // shows power of wheel i
             telemetry.addData(Integer.toString(i + 1), wheelCoefficients[i]);
         }
+
+        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
+
+
+        /*
+         * GADGET CONTROL
+         */
+
+        // suckers
+
+        //if (gamepad2.right_bumper) robot.suck();
+        //if (gamepad2.left_bumper)  robot.spit();
+
+        //if ( !(gamepad2.left_bumper || gamepad2.right_bumper) ) robot.stopSucking();
+
+        // lifters
+
+        double liftPower = gamepad2.right_stick_y;
+
+        robot.liftPower(liftPower);
+        //robot.rightSucker.setPower(gamepad2.right_stick_y);
+
+        //telemetry.addData("left lift position", robot.leftLift.getCurrentPosition());
+        //telemetry.addData("right lift position", robot.rightLift.getCurrentPosition());
+
+        /*
+         * OTHER TELEMETRY
+         */
+
+        telemetry.addData("a: ", robot.imu.getAcceleration());
+        telemetry.addData("v:" , robot.imu.getVelocity());
+
+        telemetry.addData("lift pos:", robot.leftLift.getCurrentPosition());
+        telemetry.addData("target pos:", robot.leftLift.getTargetPosition());
+        telemetry.addData("input Targ pos:", liftPower);
+
+
+
+
 
     }
 
@@ -186,6 +236,8 @@ public class HumanControl extends OpMode {
     public void stop() {
 
         // Code runs on stop
+
+        robot.imu.stopAccelerationIntegration();
 
     }
 

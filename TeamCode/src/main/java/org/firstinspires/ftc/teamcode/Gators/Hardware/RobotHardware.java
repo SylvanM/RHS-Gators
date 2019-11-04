@@ -33,6 +33,7 @@ import android.graphics.Color;
 import android.text.format.Time;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -55,6 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.Gators.Calibration.CalibrateIMU;
 
 /**
  * This is NOT an opmode.
@@ -75,20 +77,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class RobotHardware
 {
+
+    /* Properties */
+
+    private int liftPosition = 2;
+
     /* Public OpMode members. */
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    public DcMotor armRaisingMotor;
-    public DcMotor armBaseMotor;
-    public DcMotor armExtensionMotor;
-
-    public Servo   leftClawServo;
-    public Servo   rightClawServo;
-
-    public Servo distanceSensorArmServo; // used for rotating the distance sensor
+    /* lift motors */
+    public DcMotor leftLift;
+    public DcMotor rightLift;
 
     /* sensors */
     public Rev2mDistanceSensor distanceSensor;
@@ -98,12 +100,14 @@ public class RobotHardware
     public Orientation lastAngles = new Orientation();
     public double globalAngle, power = .30, correction;
 
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double MAX_LIFT_UP    = 0 ;
+    public static final double MAX_LIFT_DOWN  = 0 ;
 
     // Constants
 
     // all measurements in centimeters
+
+    public static final double LIFT_SPEED = 1.00;
 
     public static final double DISTANCE_BETWEEN_PARTICLES = 5;
     public static final double DISTANCE_SENSOR_OFFSET = 1; // distance from sensor to the left side of the robot
@@ -137,55 +141,53 @@ public class RobotHardware
         // Comment out if the robot does not have that hardware:
 
         // Define and Initialize Motors
-        frontLeft  = hwMap.get(DcMotor.class, "front_left");
-        frontRight = hwMap.get(DcMotor.class, "front_right");
-        backLeft   = hwMap.get(DcMotor.class, "back_left");
-        backRight  = hwMap.get(DcMotor.class, "back_right");
+        frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
+        frontRight  = hwMap.get( DcMotor.class, "front_right" );
+        backLeft    = hwMap.get( DcMotor.class, "back_left"   );
+        backRight   = hwMap.get( DcMotor.class, "back_right"  );
 
-        //armRaisingMotor   = hwMap.get(DcMotor.class, "arm_raising");
-        //armExtensionMotor = hwMap.get(DcMotor.class, "arm_extension");
+        //leftLift    = hwMap.get( DcMotor.class, "left_lift");
+        //rightLift   = hwMap.get( DcMotor.class, "right_lift");
 
-        //leftClawServo  = hwMap.get(Servo.class, "left_servo");
-        //rightClawServo = hwMap.get(Servo.class, "right_servo");
+        //leftSucker  = hwMap.get( DcMotor.class, "left_sucker");
+        //rightSucker = hwMap.get( DcMotor.class, "right_sucker");
 
         // SENSORS
-        //imu = hwMap.get(BNO055IMU.class, "imu");
-        //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
-        //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
+        imu = hwMap.get(BNO055IMU.class, "imu");
 
-        // These might need to be changed
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-
-        // Set all motors to run with encoders.
-        // May want to use RUN_USING_ENCODER if encoders are installed.
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // set certain motors to run with encoders
-        //armRaisingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //armExtensionMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Set up sensors
+        // Calibrate IMU
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = CalibrateIMU.calibrationFileName; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        //parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        //parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        //parameters.loggingEnabled      = true;
-        //parameters.loggingTag          = "IMU";
-        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        //imu.initialize(parameters);
+        imu.initialize(parameters);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 500);
+
+        //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
+        //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
+
+        // These might need to be changed
+        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
+        frontRight.setDirection (DcMotor.Direction.FORWARD);
+        backLeft.setDirection   (DcMotor.Direction.REVERSE);
+        backRight.setDirection  (DcMotor.Direction.FORWARD);
+
+        leftLift = hwMap.get(DcMotor.class, "left_lift");
+
+        leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // make sure it is calibrated before continuing
 
     }
+
 
     // Movement functions - to be used primarily for AutoOp
 
@@ -213,64 +215,61 @@ public class RobotHardware
     }
 
 
-    // Sensor functions
+    // Gadget functions
+
+    /*
+    // sucks in blocks to grab
+    public void suck() {
+        leftSucker.setPower(1.0);
+        rightSucker.setPower(1.0);
+    }
+
+    // stops the motors
+    public void stopSucking() {
+        leftSucker.setPower(0.0);
+        rightSucker.setPower(0.0);
+    }
+
+    // reverse the suckers, aka spit out whatever we have
+    public void spit() {
+        leftSucker.setPower(-1.0);
+        rightSucker.setPower(-1.0);
+    }
+    */
+
+    // lift
+
+    public void liftPower(double power) {
+        double newPos = (5 * power) * LIFT_SPEED;
+
+        if ((liftPosition + newPos) < -166) {
+            liftPosition = -166;
+        } else if ((liftPosition + newPos) > 92) {
+            liftPosition = 92;
+        } else {
+            liftPosition += newPos;
+        }
+
+        if ((liftPosition < -166)) {
+            liftPosition = -166;
+        } else if ((liftPosition) > 92) {
+            liftPosition = 92;
+        }
+
+        leftLift.setTargetPosition((int) liftPosition);
+        leftLift.setPower(1);
+    }
+
+    // Sensor Functions
 
     public double getOrientation() {
         return AngleUnit.DEGREES.fromUnit(imu.getAngularOrientation().angleUnit, imu.getAngularOrientation().firstAngle);
     }
 
-    public double getDistance() {
-        return distanceSensor.getDistance(DistanceUnit.CM) + DISTANCE_SENSOR_OFFSET;
+    public Position position() {
+        return imu.getPosition();
     }
 
-
-    // Gadget functions
-
-    // new gadget functions
-
-    public void lowerDistanceSensor() {
-        distanceSensorArmServo.setPosition(EXTENDED_SENSOR_ARM_POSITION);
-    }
-    public void raiseDistanceSensor() {
-        distanceSensorArmServo.setPosition(RETRACTED_SENSOR_ARM_POSITION);
-    }
-
-
-
-    // Old functions
-    public void raiseArmBase(double torque) {
-        armRaisingMotor.setPower(torque);
-    }
-
-    public void extendArm(double power) {
-        armExtensionMotor.setPower(power);
-    }
-
-    void setClaw(double position) {
-        double left = 180 - position;
-        double right = position;
-        // must account for different position of the servos
-
-        leftClawServo.setPosition(left);
-        rightClawServo.setPosition(right);
-    }
-
-    public void openClaw()  {
-        setClaw(180.0);
-    }
-
-    public void closeClaw() {
-        setClaw(0.0);
-    }
-
-    // lets us have 2 values for direction
-    enum Direction {
-        left, right, forward, backward
-    }
-
-    enum MotorGroup {
-        port, starboard, front, back, all
-    }
 
 }
 

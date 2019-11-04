@@ -44,17 +44,14 @@ import java.util.concurrent.TimeUnit;
  * This is the Robot's automonous driver mode
  */
 
-@Autonomous(name="Advanced Autonomous", group="AutoOp")
+@Autonomous(name="Autonomous", group="AutoOp")
 //@Disabled
-public class AdvancedAuto extends OpMode {
+public class AutoOp extends OpMode {
 
     /* Declare OpMode members. */
-    private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
-    private ElapsedTime runtime = new ElapsedTime();
-    private double          clawOffset  = 0.0 ;                  // Servo mid position
-    private final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
-    private final double    DESIRED_COLOR[] = new double[] {0, 0, 0}; // RGB Values of gold mineral
-    private int mineralsTested = 0;
+    private RobotHardware   robot   = new RobotHardware();
+    private ElapsedTime     runtime = new ElapsedTime();
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -67,8 +64,9 @@ public class AdvancedAuto extends OpMode {
          */
         robot.init(hardwareMap);
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "AutoOp initiating");
+        // send message to indicate that the robot is waiting to be started
+        telemetry.addData("Status", "AutoOp initialized");
+
     }
 
     /*
@@ -77,6 +75,8 @@ public class AdvancedAuto extends OpMode {
     @Override
     public void init_loop() {
         // Code runs in a loop after init button pressed
+
+
     }
 
     /*
@@ -84,8 +84,11 @@ public class AdvancedAuto extends OpMode {
      */
     @Override
     public void start() {
+        // starts time of match
         runtime.startTime();
-        robot.lowerDistanceSensor();
+
+        telemetry.addData("Status:", "Starting");
+
     }
 
     /*
@@ -94,34 +97,13 @@ public class AdvancedAuto extends OpMode {
     @Override
     public void loop() {
 
-        // TODO: detach from lander
+        // okay! here is where the autonomous is coded!
 
-        // begin testing minerals
+        /*
+         * TELEMETRY
+         */
 
-        while (robot.getDistance() > robot.WIDTH_OF_ROBOT) { // while there is no object directly in front of the robot
-            robot.move(.1, 0, 0); // move forward
-        }
-        robot.stop();
-
-        while (mineralsTested < 3) {
-            while (robot.getDistance() > robot.COLOR_SENSOR_RANGE) {
-                robot.move(.1,0,90);
-            }
-            robot.stop();
-
-            double detectedColors[] = new double[] {robot.colorSensor.red(), robot.colorSensor.blue(), robot.colorSensor.green()};
-            mineralsTested++;
-            if (arrayIsClose(detectedColors, DESIRED_COLOR, 10)) {
-                // knock off that ball
-                moveBot(.5,0,90,1);
-            } else {
-                robot.raiseDistanceSensor();
-                moveBot(1, 0, 90, 1);
-                robot.lowerDistanceSensor();
-            }
-        }
-
-        // mineral thing is done! Woot woot
+        telemetry.addData("Orientation:", robot.getOrientation());
 
     }
 
@@ -133,46 +115,8 @@ public class AdvancedAuto extends OpMode {
 
         // Code runs on stop
 
+        telemetry.addData("Status", "Stopped");
 
-        robot.raiseDistanceSensor();
-
-    }
-
-    private void moveBot(double linearSpeed, double rotarySpeed, double angle, double forSeconds) {
-        sleep(forSeconds);
-        robot.stop();
-    }
-
-    private void sleep(double seconds) {
-        long millis = (long)seconds * 1000;
-        try {
-            wait(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // for color sensing
-    boolean doubleIsClose(double testedDouble, double target, double tolerance) {
-        if (Math.abs(testedDouble - target) < Math.abs(tolerance)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean arrayIsClose(double testedArray[], double targetArray[], double tolerance) {
-        if (testedArray.length != targetArray.length) {
-            return false;
-        }
-
-        for (int index = 0; index < targetArray.length; index++) {
-            if (!doubleIsClose(testedArray[index], targetArray[index], tolerance)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 }
