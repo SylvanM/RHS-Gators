@@ -100,8 +100,8 @@ public class RobotHardware
     public Orientation lastAngles = new Orientation();
     public double globalAngle, power = .30, correction;
 
-    public static final double MAX_LIFT_UP    = 0 ;
-    public static final double MAX_LIFT_DOWN  = 0 ;
+    public static final double MAX_LIFT_UP    = 0 ; // Maximum upward position for arm
+    public static final double MAX_LIFT_DOWN  = 0 ; // Minimum position of arm
 
     // Constants
 
@@ -132,7 +132,7 @@ public class RobotHardware
 
     /**
      * Function that initializes the robot from a hardware map
-     * @param ahwMap
+     * @param ahwMap Hardware map to use to initialize the hardware class
      */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -145,12 +145,6 @@ public class RobotHardware
         frontRight  = hwMap.get( DcMotor.class, "front_right" );
         backLeft    = hwMap.get( DcMotor.class, "back_left"   );
         backRight   = hwMap.get( DcMotor.class, "back_right"  );
-
-        //leftLift    = hwMap.get( DcMotor.class, "left_lift");
-        //rightLift   = hwMap.get( DcMotor.class, "right_lift");
-
-        //leftSucker  = hwMap.get( DcMotor.class, "left_sucker");
-        //rightSucker = hwMap.get( DcMotor.class, "right_sucker");
 
         // SENSORS
         imu = hwMap.get(BNO055IMU.class, "imu");
