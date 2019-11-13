@@ -103,7 +103,7 @@ public class AutoOp extends OpMode {
          * TELEMETRY
          */
 
-        telemetry.addData("Orientation:", robot.getOrientation());
+//        telemetry.addData("Orientation:", robot.getOrientation());
 
     }
 

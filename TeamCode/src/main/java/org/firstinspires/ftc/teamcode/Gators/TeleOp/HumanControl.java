@@ -173,10 +173,10 @@ public class HumanControl extends OpMode {
 
 
         // set all motors to corresponding coefficients
-        robot.frontLeft.setPower  (wheelCoefficients[0]);
-        robot.frontRight.setPower (wheelCoefficients[1]);
-        robot.backLeft.setPower   (wheelCoefficients[2]);
-        robot.backRight.setPower  (wheelCoefficients[3]);
+//        robot.frontLeft.setPower  (wheelCoefficients[0]);
+//        robot.frontRight.setPower (wheelCoefficients[1]);
+//        robot.backLeft.setPower   (wheelCoefficients[2]);
+//        robot.backRight.setPower  (wheelCoefficients[3]);
 
         /*
          * MOVEMENT TELEMETRY
@@ -188,7 +188,7 @@ public class HumanControl extends OpMode {
             telemetry.addData(Integer.toString(i + 1), wheelCoefficients[i]);
         }
 
-        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
+//        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
 
 
         /*
@@ -216,8 +216,8 @@ public class HumanControl extends OpMode {
          * OTHER TELEMETRY
          */
 
-        telemetry.addData("a: ", robot.imu.getAcceleration());
-        telemetry.addData("v:" , robot.imu.getVelocity());
+//        telemetry.addData("a: ", robot.imu.getAcceleration());
+//        telemetry.addData("v:" , robot.imu.getVelocity());
 
         telemetry.addData("lift pos:", robot.leftLift.getCurrentPosition());
         telemetry.addData("target pos:", robot.leftLift.getTargetPosition());

@@ -109,17 +109,6 @@ public class RobotHardware
 
     public static final double LIFT_SPEED = 1.00;
 
-    public static final double DISTANCE_BETWEEN_PARTICLES = 5;
-    public static final double DISTANCE_SENSOR_OFFSET = 1; // distance from sensor to the left side of the robot
-    public static final double WIDTH_OF_ROBOT = 18 - DISTANCE_SENSOR_OFFSET; // so that the robot knows when a ball is in front of it
-    public static final double COLOR_SENSOR_RANGE = 2; // range that the color sensor can detect colors
-
-    // Motor Locations
-
-    public static final double EXTENDED_SENSOR_ARM_POSITION = 75 / 180;
-    public static final double RETRACTED_SENSOR_ARM_POSITION = 0;
-
-
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
     private ElapsedTime period = new ElapsedTime();
@@ -141,10 +130,10 @@ public class RobotHardware
         // Comment out if the robot does not have that hardware:
 
         // Define and Initialize Motors
-        frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
-        frontRight  = hwMap.get( DcMotor.class, "front_right" );
-        backLeft    = hwMap.get( DcMotor.class, "back_left"   );
-        backRight   = hwMap.get( DcMotor.class, "back_right"  );
+        //frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
+        //frontRight  = hwMap.get( DcMotor.class, "front_right" );
+        //backLeft    = hwMap.get( DcMotor.class, "back_left"   );
+        //backRight   = hwMap.get( DcMotor.class, "back_right"  );
 
         // SENSORS
         imu = hwMap.get(BNO055IMU.class, "imu");
@@ -169,67 +158,23 @@ public class RobotHardware
         //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
 
         // These might need to be changed
-        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
-        frontRight.setDirection (DcMotor.Direction.FORWARD);
-        backLeft.setDirection   (DcMotor.Direction.REVERSE);
-        backRight.setDirection  (DcMotor.Direction.FORWARD);
+//        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
+//        frontRight.setDirection (DcMotor.Direction.FORWARD);
+//        backLeft.setDirection   (DcMotor.Direction.REVERSE);
+//        backRight.setDirection  (DcMotor.Direction.FORWARD);
 
         leftLift = hwMap.get(DcMotor.class, "left_lift");
+        rightLift = hwMap.get(DcMotor.class, "right_lift");
 
         leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // make sure it is calibrated before continuing
 
     }
 
-
-    // Movement functions - to be used primarily for AutoOp
-
-    public void move(double linearSpeed, double rotarySpeed, double angle) {
-        final double pi = Math.PI;
-
-        double wheelCoefficients[] = new double[] {0, 0, 0, 0};
-
-        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle) + (pi / 4)) + rotarySpeed;
-        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle) + (pi / 4)) - rotarySpeed;
-        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle) + (pi / 4)) + rotarySpeed;
-        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle) + (pi / 4)) - rotarySpeed;
-
-        frontLeft.setPower(wheelCoefficients[0]);
-        frontRight.setPower(wheelCoefficients[1]);
-        backLeft.setPower(wheelCoefficients[2]);
-        backRight.setPower(wheelCoefficients[3]);
-    }
-
-    public void stop() {
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
-    }
-
-
     // Gadget functions
-
-    /*
-    // sucks in blocks to grab
-    public void suck() {
-        leftSucker.setPower(1.0);
-        rightSucker.setPower(1.0);
-    }
-
-    // stops the motors
-    public void stopSucking() {
-        leftSucker.setPower(0.0);
-        rightSucker.setPower(0.0);
-    }
-
-    // reverse the suckers, aka spit out whatever we have
-    public void spit() {
-        leftSucker.setPower(-1.0);
-        rightSucker.setPower(-1.0);
-    }
-    */
 
     // lift
 
@@ -252,18 +197,9 @@ public class RobotHardware
 
         leftLift.setTargetPosition((int) liftPosition);
         leftLift.setPower(1);
+        rightLift.setTargetPosition((int) liftPosition);
+        rightLift.setPower(1);
     }
-
-    // Sensor Functions
-
-    public double getOrientation() {
-        return AngleUnit.DEGREES.fromUnit(imu.getAngularOrientation().angleUnit, imu.getAngularOrientation().firstAngle);
-    }
-
-    public Position position() {
-        return imu.getPosition();
-    }
-
 
 }
 
