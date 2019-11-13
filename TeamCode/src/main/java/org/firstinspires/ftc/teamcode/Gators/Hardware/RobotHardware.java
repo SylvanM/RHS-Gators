@@ -101,7 +101,7 @@ public class RobotHardware
     public double globalAngle, power = .30, correction;
 
     public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
-    public static final int MAX_LIFT_DOWN  = -2444 ; // Minimum position of arm
+    public static final int MAX_LIFT_DOWN  = -2500 ; // Minimum position of arm
 
     // Constants
 
