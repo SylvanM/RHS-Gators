@@ -192,9 +192,9 @@ public class RobotHardware
 
     public void updateLift() {
         leftLift.setTargetPosition((int) liftPosition);
-        leftLift.setPower(1);
+        leftLift.setPower(0.3);
         rightLift.setTargetPosition((int) liftPosition);
-        rightLift.setPower(1);
+        rightLift.setPower(0.3);
     }
 
 }
