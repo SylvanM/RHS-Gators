@@ -188,7 +188,9 @@ public class RobotHardware
         } else {
             liftPosition += dpos;
         }
+    }
 
+    public void updateLift() {
         leftLift.setTargetPosition((int) liftPosition);
         leftLift.setPower(1);
         rightLift.setTargetPosition((int) liftPosition);
