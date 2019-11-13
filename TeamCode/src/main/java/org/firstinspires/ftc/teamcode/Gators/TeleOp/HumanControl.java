@@ -207,6 +207,10 @@ public class HumanControl extends OpMode {
         double liftPower = gamepad2.right_stick_y;
 
         robot.liftPower(liftPower);
+
+        if (gamepad2.y) robot.liftPosition = RobotHardware.MAX_LIFT_UP;
+        if (gamepad2.x) robot.liftPosition = RobotHardware.MAX_LIFT_DOWN;
+
         //robot.rightSucker.setPower(gamepad2.right_stick_y);
 
         //telemetry.addData("left lift position", robot.leftLift.getCurrentPosition());

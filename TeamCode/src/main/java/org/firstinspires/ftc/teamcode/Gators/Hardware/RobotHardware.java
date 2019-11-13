@@ -80,7 +80,7 @@ public class RobotHardware
 
     /* Properties */
 
-    private int liftPosition = MAX_LIFT_DOWN;
+    public int liftPosition = MAX_LIFT_DOWN;
 
     /* Public OpMode members. */
     public DcMotor frontLeft;
