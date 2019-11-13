@@ -219,7 +219,8 @@ public class HumanControl extends OpMode {
 //        telemetry.addData("a: ", robot.imu.getAcceleration());
 //        telemetry.addData("v:" , robot.imu.getVelocity());
 
-        telemetry.addData("lift pos:", robot.leftLift.getCurrentPosition());
+        telemetry.addData("left lift pos:", robot.leftLift.getCurrentPosition());
+        telemetry.addData("right lift pos:", robot.leftLift.getCurrentPosition());
         telemetry.addData("target pos:", robot.leftLift.getTargetPosition());
         telemetry.addData("input Targ pos:", liftPower);
 
