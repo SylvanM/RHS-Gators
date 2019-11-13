@@ -81,7 +81,6 @@ public class RobotHardware
     /* Properties */
 
     private int liftPosition = MAX_LIFT_DOWN;
-    private int rightPosition = MAX_RIGHT_LIFT_DOWN;
 
     /* Public OpMode members. */
     public DcMotor frontLeft;
@@ -101,11 +100,8 @@ public class RobotHardware
     public Orientation lastAngles = new Orientation();
     public double globalAngle, power = .30, correction;
 
-    public static final int MAX_LIFT_UP    = -2230 ; // Maximum upward position for arm
-    public static final int MAX_LIFT_DOWN  = -1524 ; // Minimum position of arm
-
-    public static final int MAX_RIGHT_LIFT_UP = 0;
-    public static final int MAX_RIGHT_LIFT_DOWN = 0;
+    public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
+    public static final int MAX_LIFT_DOWN  = -2444 ; // Minimum position of arm
 
     // Constants
 
@@ -183,14 +179,20 @@ public class RobotHardware
     // lift
 
     public void liftPower(double power) {
-        double newPos = (5 * power) * LIFT_SPEED;
+        double dpos = (5 * power) * LIFT_SPEED;
 
+        if (liftPosition + dpos > MAX_LIFT_UP) {
+            liftPosition = MAX_LIFT_UP;
+        } else if (liftPosition + dpos < MAX_LIFT_DOWN) {
+            liftPosition = MAX_LIFT_DOWN;
+        } else {
+            liftPosition += dpos;
+        }
 
-
-//        leftLift.setTargetPosition((int) liftPosition);
-//        leftLift.setPower(1);
-//        rightLift.setTargetPosition((int) liftPosition);
-//        rightLift.setPower(1);
+        leftLift.setTargetPosition((int) liftPosition);
+        leftLift.setPower(1);
+        rightLift.setTargetPosition((int) liftPosition);
+        rightLift.setPower(1);
     }
 
 }
