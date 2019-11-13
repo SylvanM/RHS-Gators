@@ -107,7 +107,7 @@ public class RobotHardware
 
     // all measurements in centimeters
 
-    public static final double LIFT_SPEED = 1.00;
+    public static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
