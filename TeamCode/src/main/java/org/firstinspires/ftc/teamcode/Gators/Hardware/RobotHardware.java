@@ -171,7 +171,7 @@ public class RobotHardware
     public void moveBot(double angle, double rotarySpeed) {
 
         double pi = Math.PI;
-        
+
         double linearSpeed = getMagnitude(x, y);
 
         wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
