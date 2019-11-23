@@ -163,6 +163,30 @@ public class RobotHardware
         public boolean claw = false;
     }
 
+    /**
+     * Function that will move the robot
+     * @param x, y to calculate angle and magnitude
+     * @param rotarySpeed to set the rotary speed for the wheels
+     */
+    public void moveBot(double x, double y, double rotarySpeed) {
 
+        double pi = Math.PI;
+
+        double wheelCoefficients[] = new double[4];
+
+        double angle = getAngle(x, y);
+        double linearSpeed = getMagnitude(x, y);
+
+        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
+        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
+        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
+        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
+
+        frontLeft.setPower(wheelCoefficients[0]);
+        frontRight.setPower(wheelCoefficients[1]);
+        backLeft.setPower(wheelCoefficients[2]);
+        backRight.setPower(wheelCoefficients[3]);
+
+    }
 }
 
