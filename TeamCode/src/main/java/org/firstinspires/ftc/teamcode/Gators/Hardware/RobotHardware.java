@@ -34,6 +34,7 @@ import android.text.format.Time;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -93,7 +94,7 @@ public class RobotHardware
     public DcMotor rightLift;
 
     /* servos */
-    public Servo claw;
+    public CRServo claw;
 
     /* Constants */
 
@@ -106,10 +107,22 @@ public class RobotHardware
     private static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
-    private HardwareMap hwMap  =  null;
+    private HardwareMap hwMap  = null;
     private ElapsedTime period = new ElapsedTime();
 
-    public RobotHardware() {}
+    public RobotHardware(HardwareMap ahwMap, InitInstructions i) {
+
+        frontLeft  = i.frontLeft  ? ahwMap.get(DcMotor.class, "front_left")  : null;
+        frontRight = i.frontRight ? ahwMap.get(DcMotor.class, "front_right") : null;
+        backLeft   = i.backLeft   ? ahwMap.get(DcMotor.class, "back_left")   : null;
+        backRight  = i.backRight  ? ahwMap.get(DcMotor.class, "back_right")  : null;
+
+        leftLift  = i.leftLift  ? ahwMap.get(DcMotor.class, "left_lift")  : null;
+        rightLift = i.rightLift ? ahwMap.get(DcMotor.class, "right_lift") : null;
+
+        claw = i.claw ? ahwMap.get(CRServo.class, "claw") : null;
+
+    }
 
     /* Initialize standard Hardware interfaces */
 
@@ -124,15 +137,15 @@ public class RobotHardware
         // Comment out if the robot does not have that hardware:
 
         // Define and Initialize Motors
-        frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
-        frontRight  = hwMap.get( DcMotor.class, "front_right" );
-        backLeft    = hwMap.get( DcMotor.class, "back_left"   );
-        backRight   = hwMap.get( DcMotor.class, "back_right"  );
+        frontLeft   = hwMap.get ( DcMotor.class, "front_left"  );
+        frontRight  = hwMap.get ( DcMotor.class, "front_right" );
+        backLeft    = hwMap.get ( DcMotor.class, "back_left"   );
+        backRight   = hwMap.get ( DcMotor.class, "back_right"  );
 
-        leftLift = hwMap.get(DcMotor.class, "left_lift");
-        rightLift = hwMap.get(DcMotor.class, "right_lift");
+        leftLift = hwMap.get  (DcMotor.class, "left_lift");
+        rightLift = hwMap.get (DcMotor.class, "right_lift");
 
-        claw = hwMap.get(Servo.class, "claw");
+        claw = hwMap.get(CRServo.class, "claw");
 
         //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
         //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
@@ -143,9 +156,9 @@ public class RobotHardware
         backLeft.setDirection   (DcMotor.Direction.REVERSE);
         backRight.setDirection  (DcMotor.Direction.FORWARD);
 
-        leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftLift.setMode        (DcMotor.RunMode.RUN_TO_POSITION);
+        rightLift.setMode       (DcMotor.RunMode.RUN_TO_POSITION);
+        rightLift.setDirection  (DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -172,7 +185,24 @@ public class RobotHardware
         rightLift.setPower(0.3);
     }
 
+    // Used for initialization instructions
+    // we can initialize it with this so it knows what parts to initialize
+    // so we don't run into a "lol didn't find it" error
+    public static class InitInstructions {
 
+        /* Public OpMode members. */
+        public boolean frontLeft  = false;
+        public boolean frontRight = false;
+        public boolean backLeft   = false;
+        public boolean backRight  = false;
+
+        /* lift motors */
+        public boolean leftLift  = false;
+        public boolean rightLift = false;
+
+        /* servos */
+        public boolean claw = false;
+    }
 
 }
 

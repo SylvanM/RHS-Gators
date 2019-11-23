@@ -211,8 +211,6 @@ public class HumanControl extends OpMode {
 
         // Code runs on stop
 
-        robot.imu.stopAccelerationIntegration();
-
     }
 
     // methods

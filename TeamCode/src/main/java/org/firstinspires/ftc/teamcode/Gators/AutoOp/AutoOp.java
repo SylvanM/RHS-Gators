@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 public class AutoOp extends OpMode {
 
     /* Declare OpMode members. */
-    private RobotHardware   robot   = new RobotHardware();
+    private RobotHardware   robot;
     private ElapsedTime     runtime = new ElapsedTime();
 
     /*
