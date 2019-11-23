@@ -27,6 +27,10 @@ public abstract class LiftTest extends LinearOpMode {
 
         waitForStart(); // waits for play button to be hit
 
+        robot.leftLift.setPower(0.1);
+
+        telemetry.addData("Lift position:", robot.leftLift.getCurrentPosition());
+
     }
 
 }

@@ -30,7 +30,9 @@
 package org.firstinspires.ftc.teamcode.Gators.AutoOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // hardware class
@@ -46,76 +48,21 @@ import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="Autonomous", group="AutoOp")
 //@Disabled
-public class AutoOp extends OpMode {
+public class AutoOp extends LinearOpMode {
 
     /* Declare OpMode members. */
     private RobotHardware   robot;
     private ElapsedTime     runtime = new ElapsedTime();
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
     @Override
-    public void init() {
-        // Code runs on init-button pressed
+    public void runOpMode() throws InterruptedException {
 
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
+        // do all initialization
         robot.init(hardwareMap);
 
-        // send message to indicate that the robot is waiting to be started
-        telemetry.addData("Status", "AutoOp initialized");
+        // now wait for start and stuff
 
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-        // Code runs in a loop after init button pressed
-
-
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-        // starts time of match
-        runtime.startTime();
-
-        telemetry.addData("Status:", "Starting");
-
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-
-        // okay! here is where the autonomous is coded!
-
-        /*
-         * TELEMETRY
-         */
-
-//        telemetry.addData("Orientation:", robot.getOrientation());
-
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-
-        // Code runs on stop
-
-        telemetry.addData("Status", "Stopped");
+        waitForStart();
 
     }
 
