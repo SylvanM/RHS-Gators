@@ -43,17 +43,17 @@ public class RobotHardware
     public int liftPosition = MAX_LIFT_DOWN;
 
     /* Public OpMode members. */
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
 
     /* lift motors */
-    private DcMotor leftLift;
-    private DcMotor rightLift;
+    public DcMotor leftLift;
+    public DcMotor rightLift;
 
     /* servos */
-    private CRServo claw;
+    public CRServo claw;
 
     /* Constants */
 
@@ -162,6 +162,7 @@ public class RobotHardware
         /* servos */
         public boolean claw = false;
     }
+
 
 }
 
