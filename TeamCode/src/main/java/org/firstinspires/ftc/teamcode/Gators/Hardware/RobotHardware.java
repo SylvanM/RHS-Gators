@@ -78,7 +78,7 @@ import org.firstinspires.ftc.teamcode.Gators.Calibration.CalibrateIMU;
 public class RobotHardware
 {
 
-    /* Properties */
+    /* Constants and properties */
 
     public int liftPosition = MAX_LIFT_DOWN;
 
@@ -92,30 +92,24 @@ public class RobotHardware
     public DcMotor leftLift;
     public DcMotor rightLift;
 
-    /* sensors */
-    public Rev2mDistanceSensor distanceSensor;
-    public BNO055IMU imu;
-    public ColorSensor colorSensor;
+    /* servos */
+    public Servo claw;
 
-    public Orientation lastAngles = new Orientation();
-    public double globalAngle, power = .30, correction;
+    /* Constants */
 
     public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
     public static final int MAX_LIFT_DOWN  = -2500 ; // Minimum position of arm
 
-    // Constants
+    public static final int CLAW_OPEN   = 0;
+    public static final int CLAW_CLOSED = 0;
 
-    // all measurements in centimeters
-
-    public static final double LIFT_SPEED = 2.50;
+    private static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
     private ElapsedTime period = new ElapsedTime();
 
-    public RobotHardware() {
-
-    }
+    public RobotHardware() {}
 
     /* Initialize standard Hardware interfaces */
 
@@ -130,47 +124,28 @@ public class RobotHardware
         // Comment out if the robot does not have that hardware:
 
         // Define and Initialize Motors
-        //frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
-        //frontRight  = hwMap.get( DcMotor.class, "front_right" );
-        //backLeft    = hwMap.get( DcMotor.class, "back_left"   );
-        //backRight   = hwMap.get( DcMotor.class, "back_right"  );
+        frontLeft   = hwMap.get( DcMotor.class, "front_left"  );
+        frontRight  = hwMap.get( DcMotor.class, "front_right" );
+        backLeft    = hwMap.get( DcMotor.class, "back_left"   );
+        backRight   = hwMap.get( DcMotor.class, "back_right"  );
 
-        // SENSORS
-        imu = hwMap.get(BNO055IMU.class, "imu");
+        leftLift = hwMap.get(DcMotor.class, "left_lift");
+        rightLift = hwMap.get(DcMotor.class, "right_lift");
 
-        // Calibrate IMU
-
-        // Set up the parameters with which we will use our IMU. Note that integration
-        // algorithm here just reports accelerations to the logcat log; it doesn't actually
-        // provide positional information.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = CalibrateIMU.calibrationFileName; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 500);
+        claw = hwMap.get(Servo.class, "claw");
 
         //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
         //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
 
         // These might need to be changed
-//        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
-//        frontRight.setDirection (DcMotor.Direction.FORWARD);
-//        backLeft.setDirection   (DcMotor.Direction.REVERSE);
-//        backRight.setDirection  (DcMotor.Direction.FORWARD);
-
-        leftLift = hwMap.get(DcMotor.class, "left_lift");
-        rightLift = hwMap.get(DcMotor.class, "right_lift");
+        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
+        frontRight.setDirection (DcMotor.Direction.FORWARD);
+        backLeft.setDirection   (DcMotor.Direction.REVERSE);
+        backRight.setDirection  (DcMotor.Direction.FORWARD);
 
         leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // make sure it is calibrated before continuing
 
     }
 
@@ -196,6 +171,8 @@ public class RobotHardware
         rightLift.setTargetPosition((int) liftPosition);
         rightLift.setPower(0.3);
     }
+
+
 
 }
 

@@ -33,16 +33,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleMotorRobot;
+import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleServoRobot;
 
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@TeleOp(name="Motor Test", group="Testing")
+@TeleOp(name="Servo Test", group="Testing")
 //@Disabled
-public class MotorTest extends OpMode {
+public class ServoTest extends OpMode {
 
     /* Declare OpMode members. */
-    private SingleMotorRobot robot         = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
+    private SingleServoRobot robot         = new SingleServoRobot(); // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
 
     /*
@@ -81,10 +82,7 @@ public class MotorTest extends OpMode {
     @Override
     public void loop() {
 
-        robot.motor.setPower(gamepad1.left_stick_y);
-
-        telemetry.addData("Power", robot.motor.getPower());
-        telemetry.addData("Position", robot.motor.getCurrentPosition());
+        robot.servo.setPower(gamepad1.left_stick_y);
 
     }
 

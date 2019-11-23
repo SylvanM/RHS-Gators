@@ -63,31 +63,6 @@ public class HumanControl extends OpMode {
          */
 
         robot.init(hardwareMap);
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode                 = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit            = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled       = true;
-
-        // the initial position used for calibration
-        Position initialPos = new Position();
-        initialPos.x = 0;
-        initialPos.y = 0;
-        initialPos.z = 0;
-
-        Velocity initialVel = new Velocity();
-        initialVel.xVeloc = 0;
-        initialVel.yVeloc = 0;
-        initialVel.zVeloc = 0;
-
-        robot.imu.initialize(parameters);
-        robot.imu.startAccelerationIntegration(initialPos, initialVel, 250);
-
-
-        // Code runs in a loop after init button pressed
-        telemetry.addData("Calibration Status:", robot.imu.getCalibrationStatus().toString());
-
     }
 
     /*
@@ -95,9 +70,6 @@ public class HumanControl extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetry.addData("Gyro Calibration", robot.imu.isGyroCalibrated());
-        telemetry.addData("Acel Calibration", robot.imu.isAccelerometerCalibrated());
-        telemetry.addData("Calibration Status", Integer.toBinaryString(robot.imu.getCalibrationStatus().calibrationStatus));
     }
 
     /*
