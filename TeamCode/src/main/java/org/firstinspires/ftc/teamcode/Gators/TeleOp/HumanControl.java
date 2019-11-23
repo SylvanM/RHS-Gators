@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class HumanControl extends OpMode {
 
     /* Declare OpMode members. */
-    private RobotHardware robot         = new RobotHardware(); // use the class created to define a Pushbot's hardware
+    private RobotHardware robot; // use the class created to define a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
 
     /*
@@ -191,15 +191,6 @@ public class HumanControl extends OpMode {
 
 //        telemetry.addData("a: ", robot.imu.getAcceleration());
 //        telemetry.addData("v:" , robot.imu.getVelocity());
-
-        telemetry.addData("left lift pos:", robot.leftLift.getCurrentPosition());
-        telemetry.addData("right lift pos:", robot.leftLift.getCurrentPosition());
-        telemetry.addData("target pos:", robot.leftLift.getTargetPosition());
-        telemetry.addData("input Targ pos:", liftPower);
-
-
-
-
 
     }
 
