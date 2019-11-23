@@ -168,13 +168,10 @@ public class RobotHardware
      * @param x, y to calculate angle and magnitude
      * @param rotarySpeed to set the rotary speed for the wheels
      */
-    public void moveBot(double x, double y, double rotarySpeed) {
+    public void moveBot(double angle, double rotarySpeed) {
 
         double pi = Math.PI;
-
-        double wheelCoefficients[] = new double[4];
-
-        double angle = getAngle(x, y);
+        
         double linearSpeed = getMagnitude(x, y);
 
         wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
