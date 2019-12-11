@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware
@@ -40,7 +41,11 @@ public class RobotHardware
 
     /* Constants and properties */
 
+    // position of the lift
     public int liftPosition = MAX_LIFT_DOWN;
+
+    // power for lift
+    private double liftPower = 0.3;
 
     /* Public OpMode members. */
     public DcMotor frontLeft;
@@ -66,48 +71,30 @@ public class RobotHardware
     private static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
-    private HardwareMap hwMap  = null;
     private ElapsedTime period = new ElapsedTime();
 
+    // MARK: Constructors
+
+    // construct with just map and instructions
     public RobotHardware(HardwareMap ahwMap, InitInstructions i) {
+        setRobotProperties(ahwMap, i);
+    }
 
-        frontLeft  = i.frontLeft  ? ahwMap.get(DcMotor.class, "front_left")  : null;
-        frontRight = i.frontRight ? ahwMap.get(DcMotor.class, "front_right") : null;
-        backLeft   = i.backLeft   ? ahwMap.get(DcMotor.class, "back_left")   : null;
-        backRight  = i.backRight  ? ahwMap.get(DcMotor.class, "back_right")  : null;
-
-        leftLift  = i.leftLift  ? ahwMap.get(DcMotor.class, "left_lift")  : null;
-        rightLift = i.rightLift ? ahwMap.get(DcMotor.class, "right_lift") : null;
-
-        claw = i.claw ? ahwMap.get(CRServo.class, "claw") : null;
-
+    // construct with just map and instructions and value for lift power
+    public RobotHardware(HardwareMap ahwMap, InitInstructions i, int power) {
+        setRobotProperties(ahwMap, i);
+        liftPower = power;
     }
 
     /* Initialize standard Hardware interfaces */
 
     /**
      * Function that initializes the robot from a hardware map
-     * @param ahwMap Hardware map to use to initialize the hardware class
+     * @param hwMap Hardware map to use to initialize the hardware class
      */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
+    public void init(HardwareMap hwMap) {
 
-        // Comment out if the robot does not have that hardware:
-
-        // Define and Initialize Motors
-        frontLeft   = hwMap.get ( DcMotor.class, "front_left"  );
-        frontRight  = hwMap.get ( DcMotor.class, "front_right" );
-        backLeft    = hwMap.get ( DcMotor.class, "back_left"   );
-        backRight   = hwMap.get ( DcMotor.class, "back_right"  );
-
-        leftLift = hwMap.get  (DcMotor.class, "left_lift");
-        rightLift = hwMap.get (DcMotor.class, "right_lift");
-
-        claw = hwMap.get(CRServo.class, "claw");
-
-        //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
-        //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
+        setRobotProperties(hwMap, new InitInstructions(true));
 
         // These might need to be changed
         frontLeft.setDirection  (DcMotor.Direction.REVERSE);
@@ -121,7 +108,23 @@ public class RobotHardware
 
     }
 
-    // Gadget functions
+    // MARK: Methods
+
+    // This simply sets the robot's stuff given certain instructions
+    // sorry I know that's the least helpful comment ever written
+    private void setRobotProperties(HardwareMap map, InitInstructions i) {
+        frontLeft  = i.frontLeft  ? map.get(DcMotor.class, "front_left")  : null;
+        frontRight = i.frontRight ? map.get(DcMotor.class, "front_right") : null;
+        backLeft   = i.backLeft   ? map.get(DcMotor.class, "back_left")   : null;
+        backRight  = i.backRight  ? map.get(DcMotor.class, "back_right")  : null;
+
+        leftLift  = i.leftLift  ? map.get(DcMotor.class, "left_lift")  : null;
+        rightLift = i.rightLift ? map.get(DcMotor.class, "right_lift") : null;
+
+        claw = i.claw ? map.get(CRServo.class, "claw") : null;
+    }
+
+    // MARK: Gadget functions
 
     // lift
 
@@ -139,9 +142,9 @@ public class RobotHardware
 
     public void updateLift() {
         leftLift.setTargetPosition((int) liftPosition);
-        leftLift.setPower(0.3);
+        leftLift.setPower(liftPower);
         rightLift.setTargetPosition((int) liftPosition);
-        rightLift.setPower(0.3);
+        rightLift.setPower(liftPower);
     }
 
     // Used for initialization instructions
@@ -161,6 +164,25 @@ public class RobotHardware
 
         /* servos */
         public boolean claw = false;
+
+        // default
+        public InitInstructions() {}
+
+        public InitInstructions(boolean all) {
+            /* Public OpMode members. */
+            frontLeft  = all;
+            frontRight = all;
+            backLeft   = all;
+            backRight  = all;
+
+            /* lift motors */
+            leftLift  = all;
+            rightLift = all;
+
+            /* servos */
+            claw = all;
+        }
+
     }
 
     /**

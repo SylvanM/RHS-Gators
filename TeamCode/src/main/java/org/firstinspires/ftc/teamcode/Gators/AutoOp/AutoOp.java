@@ -57,10 +57,7 @@ public class AutoOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // do all initialization
-        robot.init(hardwareMap);
 
-        // now wait for start and stuff
 
         waitForStart();
 
