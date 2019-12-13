@@ -42,7 +42,7 @@ public class RobotHardware
     /* Constants and properties */
 
     // position of the lift
-    public int liftPosition = MAX_LIFT_DOWN;
+    public int liftPosition;
 
     // power for lift
     private double liftPower = 0.3;
