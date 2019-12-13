@@ -64,7 +64,7 @@ public class HumanControl extends OpMode {
         RobotHardware.InitInstructions i = new RobotHardware.InitInstructions(true);
         i.claw = false;
 
-        robot.init(hardwareMap);
+        robot = new RobotHardware(hardwareMap);
     }
 
     /*

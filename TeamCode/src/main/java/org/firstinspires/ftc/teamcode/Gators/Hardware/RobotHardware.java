@@ -77,6 +77,10 @@ public class RobotHardware
         setRobotProperties(ahwMap, i);
     }
 
+    public RobotHardware(HardwareMap ahwMap) {
+        init(ahwMap);
+    }
+
     // construct with just map and instructions and value for lift power
     public RobotHardware(HardwareMap ahwMap, InitInstructions i, int power) {
         setRobotProperties(ahwMap, i);
