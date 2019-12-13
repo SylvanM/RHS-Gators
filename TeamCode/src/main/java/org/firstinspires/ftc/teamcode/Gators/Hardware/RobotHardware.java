@@ -184,28 +184,28 @@ public class RobotHardware
         }
 
     }
-
-    /**
-     * Function that will move the robot
-     * @param angle to calculate angle and magnitude
-     * @param rotarySpeed to set the rotary speed for the wheels
-     */
-    public void moveBot(double angle, double speed, double rotarySpeed) {
-
-        double pi = Math.PI;
-
-        double [] wheelCoefficients = new double[4];
-
-        wheelCoefficients[0] = speed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[1] = speed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
-        wheelCoefficients[2] = speed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[3] = speed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
-
-        frontLeft.setPower(wheelCoefficients[0]);
-        frontRight.setPower(wheelCoefficients[1]);
-        backLeft.setPower(wheelCoefficients[2]);
-        backRight.setPower(wheelCoefficients[3]);
-
-    }
+//
+//    /**
+//     * Function that will move the robot
+//     * @param angle to calculate angle and magnitude
+//     * @param rotarySpeed to set the rotary speed for the wheels
+//     */
+//    public void moveBot(double angle, double speed, double rotarySpeed) {
+//
+//        double pi = Math.PI;
+//
+//        double [] wheelCoefficients = new double[4];
+//
+//        wheelCoefficients[0] = speed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
+//        wheelCoefficients[1] = speed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
+//        wheelCoefficients[2] = speed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
+//        wheelCoefficients[3] = speed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
+//
+//        frontLeft.setPower(wheelCoefficients[0]);
+//        frontRight.setPower(wheelCoefficients[1]);
+//        backLeft.setPower(wheelCoefficients[2]);
+//        backRight.setPower(wheelCoefficients[3]);
+//
+//    }
 }
 

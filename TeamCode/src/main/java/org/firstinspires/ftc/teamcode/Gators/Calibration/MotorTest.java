@@ -42,8 +42,8 @@ import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleMotorRobot;
 public class MotorTest extends OpMode {
 
     /* Declare OpMode members. */
-    private SingleMotorRobot robot         = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
-                                                               // could also use HardwarePushbotMatrix class.
+    private SingleMotorRobot robot = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
+                                                             // could also use HardwarePushbotMatrix class.
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -81,10 +81,11 @@ public class MotorTest extends OpMode {
     @Override
     public void loop() {
 
-        robot.motor.setPower(gamepad1.left_stick_y);
+        robot.left.setPower(gamepad1.left_stick_y);
+        robot.right.setPower(-gamepad1.left_stick_y);
 
-        telemetry.addData("Power", robot.motor.getPower());
-        telemetry.addData("Position", robot.motor.getCurrentPosition());
+        telemetry.addData("left", robot.left.getCurrentPosition());
+        telemetry.addData("right", robot.right.getCurrentPosition());
 
     }
 

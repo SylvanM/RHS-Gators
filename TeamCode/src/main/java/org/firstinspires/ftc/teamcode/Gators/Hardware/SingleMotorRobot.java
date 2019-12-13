@@ -66,7 +66,8 @@ import org.firstinspires.ftc.teamcode.Gators.Calibration.CalibrateIMU;
 public class SingleMotorRobot
 {
 
-    public DcMotor motor;
+    public DcMotor left;
+    public DcMotor right;
 
     public SingleMotorRobot() {}
 
@@ -78,8 +79,11 @@ public class SingleMotorRobot
      * @param ahwMap Hardware map to use to initialize the hardware class
      */
     public void init(HardwareMap ahwMap) {
-        motor = ahwMap.get(DcMotor.class, "motor");
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left = ahwMap.get(DcMotor.class, "left_lift");
+        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        right = ahwMap.get(DcMotor.class, "right_lift");
+        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
 
