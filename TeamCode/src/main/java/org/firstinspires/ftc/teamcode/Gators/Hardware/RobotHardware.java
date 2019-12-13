@@ -62,7 +62,7 @@ public class RobotHardware
 
     /* Constants */
 
-    public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
+    public static final int MAX_LIFT_UP    = -900 ; // Maximum upward position for arm
     public static final int MAX_LIFT_DOWN  = 0 ; // Minimum position of arm
 
     private static final double LIFT_SPEED = 2.50;
