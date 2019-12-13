@@ -61,7 +61,6 @@ public class SingleServoRobot
 
     public SingleServoRobot() {}
 
-
     /* Initialize standard Hardware interfaces */
 
     /**

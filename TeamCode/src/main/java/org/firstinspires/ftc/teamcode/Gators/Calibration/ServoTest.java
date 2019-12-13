@@ -84,6 +84,8 @@ public class ServoTest extends OpMode {
 
         robot.servo.setPower(gamepad1.left_stick_y);
 
+        telemetry.addData("Power: ", robot.servo.getPower());
+
     }
 
     /*

@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Gators.Calibration;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleMotorRobot;
 
@@ -42,8 +43,8 @@ import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleMotorRobot;
 public class MotorTest extends OpMode {
 
     /* Declare OpMode members. */
-    private SingleMotorRobot robot         = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
-                                                               // could also use HardwarePushbotMatrix class.
+    private SingleMotorRobot robot = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
+                                                             // could also use HardwarePushbotMatrix class.
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -65,6 +66,15 @@ public class MotorTest extends OpMode {
      */
     @Override
     public void init_loop() {
+
+        robot.left.setTargetPosition(0);
+        robot.right.setTargetPosition(0);
+
+        robot.left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.left.setPower(1);
+        robot.right.setPower(1);
     }
 
     /*
@@ -72,6 +82,12 @@ public class MotorTest extends OpMode {
      */
     @Override
     public void start() {
+
+        robot.left.setPower(0);
+        robot.right.setPower(0);
+
+        robot.left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -81,10 +97,11 @@ public class MotorTest extends OpMode {
     @Override
     public void loop() {
 
-        robot.motor.setPower(gamepad1.left_stick_y);
+        robot.left.setPower(gamepad1.left_stick_y);
+        robot.right.setPower(-gamepad1.left_stick_y);
 
-        telemetry.addData("Power", robot.motor.getPower());
-        telemetry.addData("Position", robot.motor.getCurrentPosition());
+        telemetry.addData("left", robot.left.getCurrentPosition());
+        telemetry.addData("right", robot.right.getCurrentPosition());
 
     }
 

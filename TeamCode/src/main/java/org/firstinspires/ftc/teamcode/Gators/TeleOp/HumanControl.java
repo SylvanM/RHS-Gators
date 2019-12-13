@@ -72,6 +72,7 @@ public class HumanControl extends OpMode {
      */
     @Override
     public void init_loop() {
+        telemetry.addLine("In loop");
     }
 
     /*
@@ -79,6 +80,7 @@ public class HumanControl extends OpMode {
      */
     @Override
     public void start() {
+        telemetry.clear();
         // Run on start
         telemetry.addLine("Driver in control, inputs now will have effect on robot.");
     }

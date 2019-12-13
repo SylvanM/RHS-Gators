@@ -45,8 +45,7 @@ public class RobotHardware
     public int liftPosition = MAX_LIFT_DOWN;
 
     // power for lift
-    private double liftPower = 0.3; // not a constant because the controller shouldn't change the power
-    //auto op should have control
+    private double liftPower = 0.3;
 
     /* Public OpMode members. */
     public DcMotor frontLeft;
@@ -66,7 +65,7 @@ public class RobotHardware
     public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
     public static final int MAX_LIFT_DOWN  = -2500 ; // Minimum position of arm
 
-    public static final int CLAW_OPEN   = 0; // servo positions
+    public static final int CLAW_OPEN   = 0;
     public static final int CLAW_CLOSED = 0;
 
     private static final double LIFT_SPEED = 2.50;
@@ -103,7 +102,6 @@ public class RobotHardware
         backLeft.setDirection   (DcMotor.Direction.REVERSE);
         backRight.setDirection  (DcMotor.Direction.FORWARD);
 
-        // sets directions
         leftLift.setMode        (DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setMode       (DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setDirection  (DcMotorSimple.Direction.REVERSE);
@@ -130,7 +128,6 @@ public class RobotHardware
 
     // lift
 
-    // tells what the new positions should be
     public void liftPower(double power) {
         double dpos = (5 * power) * LIFT_SPEED;
 
@@ -143,7 +140,6 @@ public class RobotHardware
         }
     }
 
-    // actually makes the lift position what the calculated position should be
     public void updateLift() {
         leftLift.setTargetPosition((int) liftPosition);
         leftLift.setPower(liftPower);
@@ -188,12 +184,12 @@ public class RobotHardware
         }
 
     }
-
-    /**
-     * Function that will move the robot
-     * @param angle to calculate angle and magnitude
-     * @param rotarySpeed to set the rotary speed for the wheels
-     */
+//
+//    /**
+//     * Function that will move the robot
+//     * @param angle to calculate angle and magnitude
+//     * @param rotarySpeed to set the rotary speed for the wheels
+//     */
 //    public void moveBot(double angle, double speed, double rotarySpeed) {
 //
 //        double pi = Math.PI;
@@ -209,7 +205,7 @@ public class RobotHardware
 //        frontRight.setPower(wheelCoefficients[1]);
 //        backLeft.setPower(wheelCoefficients[2]);
 //        backRight.setPower(wheelCoefficients[3]);
-
-    }
+//
+//    }
 }
 
