@@ -79,10 +79,10 @@ public class SingleMotorRobot
      * @param ahwMap Hardware map to use to initialize the hardware class
      */
     public void init(HardwareMap ahwMap) {
-        left = ahwMap.get(DcMotor.class, "left_lift");
+        left = ahwMap.get(DcMotor.class, "left");
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        right = ahwMap.get(DcMotor.class, "right_lift");
+        right = ahwMap.get(DcMotor.class, "right");
         right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
