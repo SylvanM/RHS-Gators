@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware
@@ -40,7 +41,12 @@ public class RobotHardware
 
     /* Constants and properties */
 
+    // position of the lift
     public int liftPosition = MAX_LIFT_DOWN;
+
+    // power for lift
+    private double liftPower = 0.3; // not a constant because the controller shouldn't change the power
+    //auto op should have control
 
     /* Public OpMode members. */
     public DcMotor frontLeft;
@@ -60,54 +66,36 @@ public class RobotHardware
     public static final int MAX_LIFT_UP    = -1810 ; // Maximum upward position for arm
     public static final int MAX_LIFT_DOWN  = -2500 ; // Minimum position of arm
 
-    public static final int CLAW_OPEN   = 0;
+    public static final int CLAW_OPEN   = 0; // servo positions
     public static final int CLAW_CLOSED = 0;
 
     private static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
-    private HardwareMap hwMap  = null;
     private ElapsedTime period = new ElapsedTime();
 
+    // MARK: Constructors
+
+    // construct with just map and instructions
     public RobotHardware(HardwareMap ahwMap, InitInstructions i) {
+        setRobotProperties(ahwMap, i);
+    }
 
-        frontLeft  = i.frontLeft  ? ahwMap.get(DcMotor.class, "front_left")  : null;
-        frontRight = i.frontRight ? ahwMap.get(DcMotor.class, "front_right") : null;
-        backLeft   = i.backLeft   ? ahwMap.get(DcMotor.class, "back_left")   : null;
-        backRight  = i.backRight  ? ahwMap.get(DcMotor.class, "back_right")  : null;
-
-        leftLift  = i.leftLift  ? ahwMap.get(DcMotor.class, "left_lift")  : null;
-        rightLift = i.rightLift ? ahwMap.get(DcMotor.class, "right_lift") : null;
-
-        claw = i.claw ? ahwMap.get(CRServo.class, "claw") : null;
-
+    // construct with just map and instructions and value for lift power
+    public RobotHardware(HardwareMap ahwMap, InitInstructions i, int power) {
+        setRobotProperties(ahwMap, i);
+        liftPower = power;
     }
 
     /* Initialize standard Hardware interfaces */
 
     /**
      * Function that initializes the robot from a hardware map
-     * @param ahwMap Hardware map to use to initialize the hardware class
+     * @param hwMap Hardware map to use to initialize the hardware class
      */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
+    public void init(HardwareMap hwMap) {
 
-        // Comment out if the robot does not have that hardware:
-
-        // Define and Initialize Motors
-        frontLeft   = hwMap.get ( DcMotor.class, "front_left"  );
-        frontRight  = hwMap.get ( DcMotor.class, "front_right" );
-        backLeft    = hwMap.get ( DcMotor.class, "back_left"   );
-        backRight   = hwMap.get ( DcMotor.class, "back_right"  );
-
-        leftLift = hwMap.get  (DcMotor.class, "left_lift");
-        rightLift = hwMap.get (DcMotor.class, "right_lift");
-
-        claw = hwMap.get(CRServo.class, "claw");
-
-        //distanceSensor = hwMap.get(Rev2mDistanceSensor.class, "distance_sensor");
-        //colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
+        setRobotProperties(hwMap, new InitInstructions(true));
 
         // These might need to be changed
         frontLeft.setDirection  (DcMotor.Direction.REVERSE);
@@ -115,16 +103,34 @@ public class RobotHardware
         backLeft.setDirection   (DcMotor.Direction.REVERSE);
         backRight.setDirection  (DcMotor.Direction.FORWARD);
 
+        // sets directions
         leftLift.setMode        (DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setMode       (DcMotor.RunMode.RUN_TO_POSITION);
         rightLift.setDirection  (DcMotorSimple.Direction.REVERSE);
 
     }
 
-    // Gadget functions
+    // MARK: Methods
+
+    // This simply sets the robot's stuff given certain instructions
+    // sorry I know that's the least helpful comment ever written
+    private void setRobotProperties(HardwareMap map, InitInstructions i) {
+        frontLeft  = i.frontLeft  ? map.get(DcMotor.class, "front_left")  : null;
+        frontRight = i.frontRight ? map.get(DcMotor.class, "front_right") : null;
+        backLeft   = i.backLeft   ? map.get(DcMotor.class, "back_left")   : null;
+        backRight  = i.backRight  ? map.get(DcMotor.class, "back_right")  : null;
+
+        leftLift  = i.leftLift  ? map.get(DcMotor.class, "left_lift")  : null;
+        rightLift = i.rightLift ? map.get(DcMotor.class, "right_lift") : null;
+
+        claw = i.claw ? map.get(CRServo.class, "claw") : null;
+    }
+
+    // MARK: Gadget functions
 
     // lift
 
+    // tells what the new positions should be
     public void liftPower(double power) {
         double dpos = (5 * power) * LIFT_SPEED;
 
@@ -137,11 +143,12 @@ public class RobotHardware
         }
     }
 
+    // actually makes the lift position what the calculated position should be
     public void updateLift() {
         leftLift.setTargetPosition((int) liftPosition);
-        leftLift.setPower(0.3);
+        leftLift.setPower(liftPower);
         rightLift.setTargetPosition((int) liftPosition);
-        rightLift.setPower(0.3);
+        rightLift.setPower(liftPower);
     }
 
     // Used for initialization instructions
@@ -161,28 +168,47 @@ public class RobotHardware
 
         /* servos */
         public boolean claw = false;
+
+        // default
+        public InitInstructions() {}
+
+        public InitInstructions(boolean all) {
+            /* Public OpMode members. */
+            frontLeft  = all;
+            frontRight = all;
+            backLeft   = all;
+            backRight  = all;
+
+            /* lift motors */
+            leftLift  = all;
+            rightLift = all;
+
+            /* servos */
+            claw = all;
+        }
+
     }
 
     /**
      * Function that will move the robot
-     * @param x, y to calculate angle and magnitude
+     * @param angle to calculate angle and magnitude
      * @param rotarySpeed to set the rotary speed for the wheels
      */
-    public void moveBot(double angle, double rotarySpeed) {
-
-        double pi = Math.PI;
-
-        double linearSpeed = getMagnitude(x, y);
-
-        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
-        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
-
-        frontLeft.setPower(wheelCoefficients[0]);
-        frontRight.setPower(wheelCoefficients[1]);
-        backLeft.setPower(wheelCoefficients[2]);
-        backRight.setPower(wheelCoefficients[3]);
+//    public void moveBot(double angle, double speed, double rotarySpeed) {
+//
+//        double pi = Math.PI;
+//
+//        double [] wheelCoefficients = new double[4];
+//
+//        wheelCoefficients[0] = speed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
+//        wheelCoefficients[1] = speed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
+//        wheelCoefficients[2] = speed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
+//        wheelCoefficients[3] = speed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
+//
+//        frontLeft.setPower(wheelCoefficients[0]);
+//        frontRight.setPower(wheelCoefficients[1]);
+//        backLeft.setPower(wheelCoefficients[2]);
+//        backRight.setPower(wheelCoefficients[3]);
 
     }
 }

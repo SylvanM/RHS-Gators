@@ -47,8 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class HumanControl extends OpMode {
 
     /* Declare OpMode members. */
-    private RobotHardware robot; // use the class created to define a Pushbot's hardware
-                                                               // could also use HardwarePushbotMatrix class.
+    private RobotHardware robot;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -61,6 +60,9 @@ public class HumanControl extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
+
+        RobotHardware.InitInstructions i = new RobotHardware.InitInstructions(true);
+        i.claw = false;
 
         robot.init(hardwareMap);
     }
@@ -143,12 +145,11 @@ public class HumanControl extends OpMode {
             wheelCoefficients[1] = 1;
         }
 
-
         // set all motors to corresponding coefficients
-//        robot.frontLeft.setPower  (wheelCoefficients[0]);
-//        robot.frontRight.setPower (wheelCoefficients[1]);
-//        robot.backLeft.setPower   (wheelCoefficients[2]);
-//        robot.backRight.setPower  (wheelCoefficients[3]);
+        robot.frontLeft.setPower  (wheelCoefficients[0]);
+        robot.frontRight.setPower (wheelCoefficients[1]);
+        robot.backLeft.setPower   (wheelCoefficients[2]);
+        robot.backRight.setPower  (wheelCoefficients[3]);
 
         /*
          * MOVEMENT TELEMETRY
@@ -160,19 +161,13 @@ public class HumanControl extends OpMode {
             telemetry.addData(Integer.toString(i + 1), wheelCoefficients[i]);
         }
 
-//        telemetry.addData("Position: ", Double.toString(robot.position().x) + ", " + Double.toString(robot.position().y));
-
-
         /*
          * GADGET CONTROL
          */
 
-        // suckers
+        // claw control
 
-        //if (gamepad2.right_bumper) robot.suck();
-        //if (gamepad2.left_bumper)  robot.spit();
-
-        //if ( !(gamepad2.left_bumper || gamepad2.right_bumper) ) robot.stopSucking();
+        //robot.claw.setPower(gamepad2.right_stick_y);
 
         // lifters
 
@@ -188,9 +183,6 @@ public class HumanControl extends OpMode {
         /*
          * OTHER TELEMETRY
          */
-
-//        telemetry.addData("a: ", robot.imu.getAcceleration());
-//        telemetry.addData("v:" , robot.imu.getVelocity());
 
     }
 
