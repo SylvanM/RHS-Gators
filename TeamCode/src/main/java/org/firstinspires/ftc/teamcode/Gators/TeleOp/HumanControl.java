@@ -167,20 +167,10 @@ public class HumanControl extends OpMode {
          * GADGET CONTROL
          */
 
-        // claw control
+        robot.claw.setPower(gamepad2.right_stick_y);
 
-        //robot.claw.setPower(gamepad2.right_stick_y);
-
-        // lifters
-
-        double liftPower = gamepad2.right_stick_y;
-
-        robot.liftPower(liftPower);
-
-        if (gamepad2.y) robot.liftPosition = RobotHardware.MAX_LIFT_UP;
-        if (gamepad2.x) robot.liftPosition = RobotHardware.MAX_LIFT_DOWN;
-
-        robot.updateLift();
+        robot.leftLift.setPower(gamepad2.left_stick_y);
+        robot.rightLift.setPower(-gamepad2.left_stick_y);
 
         /*
          * OTHER TELEMETRY
