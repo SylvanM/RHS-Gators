@@ -116,7 +116,7 @@ public class HumanControl extends OpMode {
         double wheelCoefficients[] = new double[4];
 
         double x = (double) -gamepad1.left_stick_x;
-        double y = (double) gamepad1.left_stick_y;
+        double y = (double) -gamepad1.left_stick_y;
 
         double angle = getAngle(x, y);
         double linearSpeed = getMagnitude(x, y);
@@ -147,11 +147,8 @@ public class HumanControl extends OpMode {
             wheelCoefficients[1] = 1;
         }
 
-        // set all motors to corresponding coefficients
-        robot.frontLeft.setPower  (wheelCoefficients[0]);
-        robot.frontRight.setPower (wheelCoefficients[1]);
-        robot.backLeft.setPower   (wheelCoefficients[2]);
-        robot.backRight.setPower  (wheelCoefficients[3]);
+        for ( i = 0; i < 4; ++i )
+            robot.setMotor(i, wheelCoefficients[i]);
 
         /*
          * MOVEMENT TELEMETRY

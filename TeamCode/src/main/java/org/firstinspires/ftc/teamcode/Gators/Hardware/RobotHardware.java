@@ -41,6 +41,11 @@ public class RobotHardware
 
     /* Constants and properties */
 
+    public final double weights[] = {
+            1, 1,
+            1, 1
+    };
+
     // position of the lift
     public int liftPosition;
 
@@ -52,6 +57,8 @@ public class RobotHardware
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
+
+    public DcMotor[] motors = new DcMotor[4];
 
     /* lift motors */
     public DcMotor leftLift;
@@ -114,10 +121,16 @@ public class RobotHardware
     // This simply sets the robot's stuff given certain instructions
     // sorry I know that's the least helpful comment ever written
     private void setRobotProperties(HardwareMap map, InitInstructions i) {
-        frontLeft  = i.frontLeft  ? map.get(DcMotor.class, "front_left")  : null;
-        frontRight = i.frontRight ? map.get(DcMotor.class, "front_right") : null;
-        backLeft   = i.backLeft   ? map.get(DcMotor.class, "back_left")   : null;
-        backRight  = i.backRight  ? map.get(DcMotor.class, "back_right")  : null;
+        int k;
+        String motorName;
+
+        for ( k = 0; k < 4; ++k ) {
+            // get motor name
+            motorName = (k < 3) ? "front_" : "back_";
+            motorName += (k % 2 == 0) ? "left" : "right";
+
+            motors[k] = i.motors[k] ? map.get(DcMotor.class, motorName) : null;
+        }
 
         leftLift  = i.leftLift  ? map.get(DcMotor.class, "left_lift")  : null;
         rightLift = i.rightLift ? map.get(DcMotor.class, "right_lift") : null;
@@ -154,10 +167,7 @@ public class RobotHardware
     public static class InitInstructions {
 
         /* Public OpMode members. */
-        public boolean frontLeft  = false;
-        public boolean frontRight = false;
-        public boolean backLeft   = false;
-        public boolean backRight  = false;
+        public boolean[] motors = { false, false, false, false };
 
         /* lift motors */
         public boolean leftLift  = false;
@@ -170,11 +180,10 @@ public class RobotHardware
         public InitInstructions() {}
 
         public InitInstructions(boolean all) {
-            /* Public OpMode members. */
-            frontLeft  = all;
-            frontRight = all;
-            backLeft   = all;
-            backRight  = all;
+            int i;
+
+            for ( i = 0; i < 4; ++i )
+                motors[i] = all;
 
             /* lift motors */
             leftLift  = all;
@@ -185,6 +194,11 @@ public class RobotHardware
         }
 
     }
+
+    public void setMotor(int motorIndex, double power) {
+        motors[motorIndex].setPower(power * weights[motorIndex]);
+    }
+
 //
 //    /**
 //     * Function that will move the robot
