@@ -64,7 +64,7 @@ public class HumanControl extends OpMode {
         RobotHardware.InitInstructions i = new RobotHardware.InitInstructions(true);
         i.claw = false;
 
-        robot = new RobotHardware(hardwareMap);
+        robot = new RobotHardware(hardwareMap, i, 1);
     }
 
     /*
@@ -96,16 +96,6 @@ public class HumanControl extends OpMode {
         int i;
 
         /*
-         * This part of the loop function controls the actual motion of the robot
-         *
-         * TO CONTROL:
-         * Both sides of the robot are controlled by their respective thumb sticks
-         * eg. to go forward, push both thumb sticks forward. To rotate right, push the left stick forward and pull the right one backward.
-         *
-         * To move side to side: Press the respective bumper buttons on the controller in relation to where you want to go
-         */
-
-        /*
          * WHEEL MOVEMENT
          */
 
@@ -113,61 +103,32 @@ public class HumanControl extends OpMode {
 
         double pi = Math.PI;
 
-        double wheelCoefficients[] = new double[4];
+        double[] wheelCoefficients = new double[4];
 
-        double x = (double) -gamepad1.left_stick_x;
+        double x = (double) gamepad1.left_stick_x;
         double y = (double) -gamepad1.left_stick_y;
 
-        double angle = getAngle(x, y);
+        double angle       = getAngle(x, y) + 135;
         double linearSpeed = getMagnitude(x, y);
-        double rotarySpeed = (double) gamepad1.right_stick_x;
+        double rotarySpeed = (double) -gamepad1.right_stick_x;
 
-        wheelCoefficients[0] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[1] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
-        wheelCoefficients[2] = linearSpeed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
-        wheelCoefficients[3] = linearSpeed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
-
-
-        // finer control (for more advanced drivers)
-        // now set each wheel to what the controller tells it
-
-        if (gamepad1.left_bumper) {
-            wheelCoefficients[2] = 1;
-            wheelCoefficients[3] = -1;
-        } else if (gamepad1.right_bumper) {
-            wheelCoefficients[2] = 1;
-            wheelCoefficients[3] = -1;
-        }
-
-        else if (gamepad1.left_trigger > 0) {
-            wheelCoefficients[0] = 1;
-            wheelCoefficients[1] = -1;
-        } else if (gamepad1.right_trigger > 0) {
-            wheelCoefficients[0] = -1;
-            wheelCoefficients[1] = 1;
-        }
-
-        for ( i = 0; i < 4; ++i )
-            robot.setMotor(i, wheelCoefficients[i]);
+        robot.moveBot(angle, linearSpeed, rotarySpeed);
 
         /*
          * MOVEMENT TELEMETRY
          */
 
-        // show power to wheels
-        for ( i = 0; i < 4; ++i ) {
-            // shows power of wheel i
-            telemetry.addData(Integer.toString(i + 1), wheelCoefficients[i]);
-        }
+        telemetry.addData("Angle:", angle);
 
         /*
          * GADGET CONTROL
          */
 
-        robot.claw.setPower(gamepad2.right_stick_y);
+        robot.lift(gamepad2.left_stick_y);
 
-        robot.leftLift.setPower(gamepad2.left_stick_y);
-        robot.rightLift.setPower(-gamepad2.left_stick_y);
+        robot.setClaw(gamepad2.right_stick_y);
+
+        telemetry.addData("Lift:", gamepad2.left_stick_y);
 
         /*
          * OTHER TELEMETRY
@@ -187,6 +148,7 @@ public class HumanControl extends OpMode {
 
     // methods
 
+    // Returns the angle of the vector with components x and y
     private double getAngle(double x, double y) {
         double angle = Math.toDegrees(Math.atan2(y, x));
         telemetry.addData("x:", x);
@@ -201,6 +163,7 @@ public class HumanControl extends OpMode {
         return angle;
     }
 
+    // Returns the magnitude of a vector with components a and b
     private double getMagnitude(double a, double b) {
         float exponent = 2;
         float aSquared = (float) Math.pow(a, exponent);
