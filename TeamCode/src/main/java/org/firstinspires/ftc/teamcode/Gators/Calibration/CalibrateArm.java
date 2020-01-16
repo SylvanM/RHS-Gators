@@ -27,12 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Gators.AutoOp;
+package org.firstinspires.ftc.teamcode.Gators.Calibration;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -44,70 +43,32 @@ import java.util.concurrent.TimeUnit;
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@Autonomous(name="Lift control", group="Omnidirectional Control")
-//@Disabled
-public class LiftTest extends OpMode {
+@TeleOp(name="Calibrate Arm", group="Calibration")
+public class CalibrateArm extends OpMode {
 
-    /* Declare OpMode members. */
-    private RobotHardware robot; // use the class created to define a Pushbot's hardware
-    // could also use HardwarePushbotMatrix class.
+    RobotHardware robot;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
     @Override
     public void init() {
-        // hey
-        // Code runs on init-button pressed
 
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
+        robot = new RobotHardware(hardwareMap);
 
-        RobotHardware.InitInstructions i = new RobotHardware.InitInstructions();
-        i.leftLift = true;
-
-        robot = new RobotHardware(hardwareMap, i);
-        telemetry.addLine("Heyuyyy");
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-        // Run on start
-        telemetry.addLine("Driver in control, inputs now will have effect on robot.");
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        // might have to remove this
-        telemetry.clear();
+        robot.leftLift.setTargetPosition(robot.DOWN_POSITION);
+        robot.rightLift.setTargetPosition(robot.DOWN_POSITION);
 
         robot.leftLift.setPower(1);
-
-        telemetry.addData("Pos:", robot) ;
-        telemetry.update();
+        robot.rightLift.setPower(1);
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
     @Override
-    public void stop() {
+    public void init_loop() {
+        telemetry.addLine("Arm position set to 0, please re-attach chains");
+        telemetry.addLine("Setting claw to 0");
+        robot.claw.setPower(0);
+    }
 
-        // Code runs on stop
+    @Override
+    public void loop() {
 
     }
 }

@@ -41,24 +41,20 @@ public class RobotHardware
 
     /* Constants and properties */
 
-    public final double weights[] = {
-            1, 1,
-            1, 1
+    public final int DOWN_POSITION = 0;
+    public final int UP_POSITION   = -690;
+
+    private final double[] weights = {
+            1.0, 1.0,
+            1.0, 1.0
     };
 
-    // position of the lift
-    public int liftPosition;
+    private final double ROBOT_SPEED = 1.0; // in meters per second
 
     // power for lift
     private double liftPower = 0.3;
 
-    /* Public OpMode members. */
-    public DcMotor frontLeft;
-    public DcMotor frontRight;
-    public DcMotor backLeft;
-    public DcMotor backRight;
-
-    public DcMotor[] motors = new DcMotor[4];
+    private DcMotor[] motors = new DcMotor[4];
 
     /* lift motors */
     public DcMotor leftLift;
@@ -67,31 +63,20 @@ public class RobotHardware
     /* servos */
     public CRServo claw;
 
-    /* Constants */
-
-    public static final int MAX_LIFT_UP    = -900 ; // Maximum upward position for arm
-    public static final int MAX_LIFT_DOWN  = 0 ; // Minimum position of arm
-
     private static final double LIFT_SPEED = 2.50;
 
     /* local OpMode members. */
     private ElapsedTime period = new ElapsedTime();
 
     // MARK: Constructors
-
-    // construct with just map and instructions
-    public RobotHardware(HardwareMap ahwMap, InitInstructions i) {
-        setRobotProperties(ahwMap, i);
+    // construct with just map and instructions and value for lift power
+    public RobotHardware(HardwareMap ahwMap, double power) {
+        setRobotProperties(ahwMap);
+        liftPower = power;
     }
 
     public RobotHardware(HardwareMap ahwMap) {
-        init(ahwMap);
-    }
-
-    // construct with just map and instructions and value for lift power
-    public RobotHardware(HardwareMap ahwMap, InitInstructions i, int power) {
-        setRobotProperties(ahwMap, i);
-        liftPower = power;
+        setRobotProperties(ahwMap);
     }
 
     /* Initialize standard Hardware interfaces */
@@ -102,17 +87,8 @@ public class RobotHardware
      */
     public void init(HardwareMap hwMap) {
 
-        setRobotProperties(hwMap, new InitInstructions(true));
+        setRobotProperties(hwMap);
 
-        // These might need to be changed
-        frontLeft.setDirection  (DcMotor.Direction.REVERSE);
-        frontRight.setDirection (DcMotor.Direction.FORWARD);
-        backLeft.setDirection   (DcMotor.Direction.REVERSE);
-        backRight.setDirection  (DcMotor.Direction.FORWARD);
-
-        leftLift.setMode        (DcMotor.RunMode.RUN_TO_POSITION);
-        rightLift.setMode       (DcMotor.RunMode.RUN_TO_POSITION);
-        rightLift.setDirection  (DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -120,107 +96,120 @@ public class RobotHardware
 
     // This simply sets the robot's stuff given certain instructions
     // sorry I know that's the least helpful comment ever written
-    private void setRobotProperties(HardwareMap map, InitInstructions i) {
+    private void setRobotProperties(HardwareMap map) {
         int k;
         String motorName;
 
         for ( k = 0; k < 4; ++k ) {
             // get motor name
-            motorName = (k < 3) ? "front_" : "back_";
+            motorName =  (k < 2)      ? "front_" : "back_";
             motorName += (k % 2 == 0) ? "left" : "right";
 
-            motors[k] = i.motors[k] ? map.get(DcMotor.class, motorName) : null;
+            motors[k] = map.get(DcMotor.class, motorName);
+            if (motors[k] == null) continue;
+            motors[k].setDirection( (k % 2 == 0) ? (DcMotor.Direction.REVERSE) : (DcMotor.Direction.FORWARD) );
         }
 
-        leftLift  = i.leftLift  ? map.get(DcMotor.class, "left_lift")  : null;
-        rightLift = i.rightLift ? map.get(DcMotor.class, "right_lift") : null;
+        leftLift  = map.get(DcMotor.class, "left_lift");
+        rightLift = map.get(DcMotor.class, "right_lift");
 
-        claw = i.claw ? map.get(CRServo.class, "claw") : null;
+        if ( leftLift  != null ) {
+            leftLift.setMode      (DcMotor.RunMode.RUN_USING_ENCODER);
+//            leftLift.setDirection (DcMotorSimple.Direction.REVERSE);
+        }
+
+        if ( rightLift != null ) {
+            rightLift.setMode      (DcMotor.RunMode.RUN_USING_ENCODER);
+//            rightLift.setDirection (DcMotorSimple.Direction.REVERSE);
+        }
+
+        claw = map.get(CRServo.class, "claw");
     }
 
     // MARK: Gadget functions
 
-    // lift
-
-    public void liftPower(double power) {
-        double dpos = (5 * power) * LIFT_SPEED;
-
-        if (liftPosition + dpos > MAX_LIFT_UP) {
-            liftPosition = MAX_LIFT_UP;
-        } else if (liftPosition + dpos < MAX_LIFT_DOWN) {
-            liftPosition = MAX_LIFT_DOWN;
-        } else {
-            liftPosition += dpos;
-        }
-    }
-
-    public void updateLift() {
-        leftLift.setTargetPosition((int) liftPosition);
-        leftLift.setPower(liftPower);
-        rightLift.setTargetPosition((int) liftPosition);
-        rightLift.setPower(liftPower);
-    }
-
-    // Used for initialization instructions
-    // we can initialize it with this so it knows what parts to initialize
-    // so we don't run into a "lol didn't find it" error
-    public static class InitInstructions {
-
-        /* Public OpMode members. */
-        public boolean[] motors = { false, false, false, false };
-
-        /* lift motors */
-        public boolean leftLift  = false;
-        public boolean rightLift = false;
-
-        /* servos */
-        public boolean claw = false;
-
-        // default
-        public InitInstructions() {}
-
-        public InitInstructions(boolean all) {
-            int i;
-
-            for ( i = 0; i < 4; ++i )
-                motors[i] = all;
-
-            /* lift motors */
-            leftLift  = all;
-            rightLift = all;
-
-            /* servos */
-            claw = all;
-        }
-
-    }
-
-    public void setMotor(int motorIndex, double power) {
-        motors[motorIndex].setPower(power * weights[motorIndex]);
-    }
-
-//
-//    /**
-//     * Function that will move the robot
-//     * @param angle to calculate angle and magnitude
-//     * @param rotarySpeed to set the rotary speed for the wheels
-//     */
-//    public void moveBot(double angle, double speed, double rotarySpeed) {
-//
-//        double pi = Math.PI;
-//
-//        double [] wheelCoefficients = new double[4];
-//
-//        wheelCoefficients[0] = speed * Math.sin(Math.toRadians(angle + 135)) + rotarySpeed;
-//        wheelCoefficients[1] = speed * Math.cos(Math.toRadians(angle + 135)) - rotarySpeed;
-//        wheelCoefficients[2] = speed * Math.cos(Math.toRadians(angle + 135)) + rotarySpeed;
-//        wheelCoefficients[3] = speed * Math.sin(Math.toRadians(angle + 135)) - rotarySpeed;
-//
-//        frontLeft.setPower(wheelCoefficients[0]);
-//        frontRight.setPower(wheelCoefficients[1]);
-//        backLeft.setPower(wheelCoefficients[2]);
-//        backRight.setPower(wheelCoefficients[3]);
-//
+//    public void lift(double power) {
+//        double speed = power * liftPower;
+//        leftLift.setPower(-speed);
+//        rightLift.setPower(speed);
 //    }
+
+    public void setClaw(double power) {
+        if ( claw == null )
+            return;
+        claw.setPower(power);
+    }
+
+    private void setMotor(int motorIndex, double power, boolean weighted) {
+        if ( motors[motorIndex] == null )
+            return;
+        motors[motorIndex].setPower(power * ( (weighted) ? (weights[motorIndex]) : (1)));
+    }
+
+    public void liftBy(double x) {
+
+        if (leftLift == null)
+            return;
+
+        // get current height
+        int currentHeight = leftLift.getCurrentPosition();
+
+        int newHeight = currentHeight + (int)(liftPower * x);
+
+        if (newHeight > DOWN_POSITION) {
+            newHeight = DOWN_POSITION;
+        }
+
+        if (currentHeight < UP_POSITION) {
+            newHeight = UP_POSITION;
+        }
+
+        setLiftHeight(newHeight);
+
+    }
+
+    // sets the lift to a specific position
+    public void setLiftHeight(int height) {
+
+        if (leftLift != null) {
+            leftLift.setTargetPosition(height);
+            leftLift.setPower(1);
+        }
+
+        if (rightLift != null) {
+            rightLift.setTargetPosition(height);
+            rightLift.setPower(1);
+        }
+
+    }
+
+    /**
+     * Function that will move the robot
+     * @param angle to calculate angle and magnitude
+     * @param distance to set the distance to travel at max speed
+     */
+    public void moveDistance(double angle, double distance) {
+        double time = distance * 1000 / ROBOT_SPEED; // gets time, in milliseconds, to move the robot
+        double startTime = period.milliseconds();
+        double deltaTime;
+        do {
+            deltaTime = period.milliseconds() - startTime;
+            moveBot(angle, 1, 0);
+        } while (deltaTime <= time);
+    }
+
+    /**
+     * Function that will move the robot
+     * @param angle to calculate angle and magnitude
+     * @param rotarySpeed to set the rotary speed for the wheels
+     */
+    public void moveBot(double angle, double speed, double rotarySpeed) {
+
+        setMotor(0, speed * Math.sin(Math.toRadians(angle)) + rotarySpeed, true);
+        setMotor(1, speed * Math.cos(Math.toRadians(angle)) - rotarySpeed, true);
+        setMotor(2, speed * Math.cos(Math.toRadians(angle)) + rotarySpeed, true);
+        setMotor(3, speed * Math.sin(Math.toRadians(angle)) - rotarySpeed, true);
+
+    }
 }
 

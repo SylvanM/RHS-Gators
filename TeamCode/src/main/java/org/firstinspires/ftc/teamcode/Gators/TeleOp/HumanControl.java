@@ -29,9 +29,9 @@
 
 package org.firstinspires.ftc.teamcode.Gators.TeleOp;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
 @TeleOp(name="Human control", group="Omnidirectional Control")
-//@Disabled
 public class HumanControl extends OpMode {
 
     /* Declare OpMode members. */
@@ -60,11 +59,7 @@ public class HumanControl extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-
-        RobotHardware.InitInstructions i = new RobotHardware.InitInstructions(true);
-        i.claw = false;
-
-        robot = new RobotHardware(hardwareMap, i, 1);
+        robot = new RobotHardware(hardwareMap);
     }
 
     /*
@@ -81,6 +76,7 @@ public class HumanControl extends OpMode {
     @Override
     public void start() {
         telemetry.clear();
+
         // Run on start
         telemetry.addLine("Driver in control, inputs now will have effect on robot.");
     }
@@ -101,10 +97,6 @@ public class HumanControl extends OpMode {
 
         // math for calculating standard control
 
-        double pi = Math.PI;
-
-        double[] wheelCoefficients = new double[4];
-
         double x = (double) gamepad1.left_stick_x;
         double y = (double) -gamepad1.left_stick_y;
 
@@ -124,7 +116,7 @@ public class HumanControl extends OpMode {
          * GADGET CONTROL
          */
 
-        robot.lift(gamepad2.left_stick_y);
+        robot.liftBy(gamepad2.left_stick_y);
 
         robot.setClaw(gamepad2.right_stick_y);
 
@@ -133,7 +125,12 @@ public class HumanControl extends OpMode {
         /*
          * OTHER TELEMETRY
          */
+        telemetry.addData("Position:", robot.leftLift.getCurrentPosition());
 
+    }
+
+    private double max(double a, double b) {
+        return (a > b) ? (a) : (b);
     }
 
     /*

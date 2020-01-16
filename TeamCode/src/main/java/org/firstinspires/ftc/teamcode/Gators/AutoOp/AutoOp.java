@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * This is the Robot's automonous driver mode
  */
 
-@Autonomous(name="Autonomous", group="AutoOp")
+@Autonomous(name="Left, Red", group="AutoOp")
 //@Disabled
 public class AutoOp extends LinearOpMode {
 
@@ -57,9 +57,13 @@ public class AutoOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-
+        RobotHardware robot = new RobotHardware(hardwareMap);
 
         waitForStart();
+
+        robot.moveDistance(0, 10);
+
+        // then pick up the thing
 
     }
 

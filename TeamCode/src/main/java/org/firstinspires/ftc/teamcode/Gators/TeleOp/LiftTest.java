@@ -27,38 +27,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Gators.Calibration;
+package org.firstinspires.ftc.teamcode.Gators.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robot.Robot;
 
-import org.firstinspires.ftc.teamcode.Gators.Hardware.SingleMotorRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.Gators.Hardware.*;
+
+import java.util.concurrent.TimeUnit;
 
 // GAMEPAD 1 controls MOTION of robot
 // GAMEPAD 2 controls ACTIONS of robot (moving the arm, stuff like that)
 
-@TeleOp(name="Motor Test", group="Testing")
-//@Disabled
-public class MotorTest extends OpMode {
+@TeleOp(name="Lift test", group="Omnidirectional Control")
+public class LiftTest extends OpMode {
 
-    /* Declare OpMode members. */
-    private SingleMotorRobot robot = new SingleMotorRobot(); // use the class created to define a Pushbot's hardware
-                                                             // could also use HardwarePushbotMatrix class.
+    private RobotHardware robot;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        // hey
-        // Code runs on init-button pressed
-
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-
-        robot.init(hardwareMap);
+        robot = new RobotHardware(hardwareMap);
     }
 
     /*
@@ -66,15 +60,7 @@ public class MotorTest extends OpMode {
      */
     @Override
     public void init_loop() {
-
-        robot.left.setTargetPosition(0);
-        robot.right.setTargetPosition(0);
-
-        robot.left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        robot.left.setPower(1);
-        robot.right.setPower(1);
+        telemetry.addLine("In loop");
     }
 
     /*
@@ -82,13 +68,9 @@ public class MotorTest extends OpMode {
      */
     @Override
     public void start() {
-
-        robot.left.setPower(0);
-        robot.right.setPower(0);
-
-        robot.left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        telemetry.clear();
+        // Run on start
+        telemetry.addLine("Driver in control, inputs now will have effect on robot.");
     }
 
     /*
@@ -97,11 +79,9 @@ public class MotorTest extends OpMode {
     @Override
     public void loop() {
 
-        robot.left.setPower(gamepad1.left_stick_y);
-        robot.right.setPower(-gamepad1.left_stick_y);
+        robot.liftBy(gamepad2.left_stick_y);
 
-        telemetry.addData("left", robot.left.getCurrentPosition());
-        telemetry.addData("right", robot.right.getCurrentPosition());
+        telemetry.addData("Left position:", robot.leftLift.getCurrentPosition());
 
     }
 
@@ -109,6 +89,10 @@ public class MotorTest extends OpMode {
      * Code to run ONCE after the driver hits STOP
      */
     @Override
-    public void stop() {}
+    public void stop() {
+
+        // Code runs on stop
+
+    }
 
 }
